@@ -198,12 +198,10 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     {% assign block_hours = 2 %}
     {% assign hour_mod = event_hour | plus: 0 | modulo: 2 %}
     {% elsif event.data.next_6_hours %}
+    {% comment %} 6-hour blocks follow the api's native windows (00/06/12/18 UTC), so the
+    chunking stays identical before and after the timeseries drops to 6-hour granularity {% endcomment %}
     {% assign block_hours = 6 %}
-    {% if event.data.next_1_hours %}
-    {% assign hour_mod = event_hour | plus: 0 | modulo: 6 %}
-    {% else %}
-    {% assign hour_mod = 0 %}
-    {% endif %}
+    {% assign hour_mod = event.time | date: "%H" | plus: 0 | modulo: 6 %}
     {% else %}
     {% continue %}
     {% endif %}
