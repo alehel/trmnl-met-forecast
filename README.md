@@ -44,7 +44,7 @@ A weather forecast plugin that displays current and upcoming weather conditions 
 
 **Features:**
 - **Current Conditions Panel** (full layout, designed for TRMNL X): Large weather icon with temperature, "feels like" temperature (wind chill/heat index), wind speed and direction, precipitation, humidity, pressure, and cloud cover
-- **Hour-by-hour Timeline** (full layout): Hourly forecast for the next 24 hours, then 3-hour aggregated rows while hourly data lasts, and 6-hour blocks further out — with day headers and dates at each day change
+- **Hour-by-hour Timeline** (full layout): Hourly forecast for the next 24 hours, then 3-hour aggregated rows while hourly data lasts, and 6-hour blocks further out — precipitation summed and temperature averaged over each block, with day headers and dates at each day change
 - **Multi-day Forecast**: Displays weather for today, tomorrow, and upcoming days
 - **Weather Icons**: Visual weather symbols based on met.no weather codes
 - **Configurable Location**: Set custom latitude and longitude coordinates for any location
