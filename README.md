@@ -21,7 +21,7 @@ Winter night (Norwegian) — negative temperatures, max/min ranges in the 6-hour
 - **Multi-day Forecast**: Displays weather for today, tomorrow, and upcoming days
 - **Weather Icons**: Visual weather symbols based on met.no weather codes
 - **Configurable Location**: Set custom latitude and longitude coordinates for any location
-- **Multi-language Support**: Available in Estonian, English, Norwegian, Finnish, and Swedish
+- **Multi-language Support**: Available in English and Norwegian
 - **Multiple Layouts**: Full, half horizontal, half vertical, and quadrant layout options
 - **Detailed Metrics**: Temperature, wind speed, and precipitation amount for each forecast period
 

@@ -35,11 +35,8 @@ custom_fields:
   description: Language for weather forecast and day names.
   field_type: select
   options:
-  - Eesti keel: et
   - English: en
   - Norsk: 'no'
-  - Suomi: fi
-  - Svenska: sv
   default: en
   optional: false
 - keyname: layout

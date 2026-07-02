@@ -1,7 +1,6 @@
 {% assign today = "now" | date: "%s" | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
 {% assign tomorrow = "now" | date: "%s" | plus: trmnl.user.utc_offset | plus: 86400 | date: "%Y-%m-%d" %}
 {% assign third_day = "now" | date: "%s" | plus: trmnl.user.utc_offset | plus: 172800 | date: "%Y-%m-%d" %}
-{% assign fourth_day = "now" | date: "%s" | plus: trmnl.user.utc_offset | plus: 259200 | date: "%Y-%m-%d" %}
 {% assign current_hour = "now" | date: "%s" | plus: trmnl.user.utc_offset | date: "%H" %}
 
 {% case current_hour %}
@@ -126,739 +125,460 @@
       clearsky_day: {
         icon: 'wi-day-sunny.svg',
         en: 'Clear sky',
-        et: 'Selge taevas',
-        fi: 'Selkeää',
         no: 'Klar himmel',
-        sv: 'Klar himmel'
       },
       clearsky_night: {
         icon: 'wi-night-clear.svg',
         en: 'Clear sky',
-        et: 'Selge taevas',
-        fi: 'Selkeää',
         no: 'Klar himmel',
-        sv: 'Klar himmel'
       },
       clearsky_polartwilight: {
         icon: 'wi-day-sunny.svg',
         en: 'Clear sky',
-        et: 'Selge taevas',
-        fi: 'Selkeää',
         no: 'Klar himmel',
-        sv: 'Klar himmel'
       },
       cloudy: {
         icon: 'wi-cloudy.svg',
         en: 'Cloudy',
-        et: 'Pilves',
-        fi: 'Pilvistä',
         no: 'Overskyet',
-        sv: 'Mulet'
       },
       fair_day: {
         icon: 'wi-day-sunny-overcast.svg',
         en: 'Fair weather',
-        et: 'Selge ilm',
-        fi: 'Kaunis sää',
         no: 'Pent vær',
-        sv: 'Vackert väder'
       },
       fair_night: {
         icon: 'wi-night-partly-cloudy.svg',
         en: 'Fair weather',
-        et: 'Selge ilm',
-        fi: 'Kaunis sää',
         no: 'Pent vær',
-        sv: 'Vackert väder'
       },
       fair_polartwilight: {
         icon: 'wi-day-sunny-overcast.svg',
         en: 'Fair weather',
-        et: 'Selge ilm',
-        fi: 'Kaunis sää',
         no: 'Pent vær',
-        sv: 'Vackert väder'
       },
       fog: {
         icon: 'wi-fog.svg',
         en: 'Fog',
-        et: 'Udu',
-        fi: 'Sumua',
         no: 'Tåke',
-        sv: 'Dimma'
       },
       heavyrain: {
         icon: 'wi-rain.svg',
         en: 'Heavy rain',
-        et: 'Tugev vihm',
-        fi: 'Kova sade',
         no: 'Kraftig regn',
-        sv: 'Kraftigt regn'
       },
       heavyrainandthunder: {
         icon: 'wi-thunderstorm.svg',
         en: 'Heavy rain and thunder',
-        et: 'Tugev vihm ja äike',
-        fi: 'Kova sade ja ukkonen',
         no: 'Kraftig regn og torden',
-        sv: 'Kraftigt regn och åska'
       },
       heavyrainshowers_day: {
         icon: 'wi-day-rain.svg',
         en: 'Heavy rain showers',
-        et: 'Tugev hoovihm',
-        fi: 'Kovia sadekuuroja',
         no: 'Kraftige regnbyger',
-        sv: 'Kraftiga regnskurar'
       },
       heavyrainshowers_night: {
         icon: 'wi-night-alt-rain.svg',
         en: 'Heavy rain showers',
-        et: 'Tugev hoovihm',
-        fi: 'Kovia sadekuuroja',
         no: 'Kraftige regnbyger',
-        sv: 'Kraftiga regnskurar'
       },
       heavyrainshowers_polartwilight: {
         icon: 'wi-day-rain.svg',
         en: 'Heavy rain showers',
-        et: 'Tugev hoovihm',
-        fi: 'Kovia sadekuuroja',
         no: 'Kraftige regnbyger',
-        sv: 'Kraftiga regnskurar'
       },
       heavyrainshowersandthunder_day: {
         icon: 'wi-day-thunderstorm.svg',
         en: 'Heavy rain showers and thunder',
-        et: 'Tugev hoovihm ja äike',
-        fi: 'Kovia sadekuuroja ja ukkonen',
         no: 'Kraftige regnbyger og torden',
-        sv: 'Kraftiga regnskurar och åska'
       },
       heavyrainshowersandthunder_night: {
         icon: 'wi-night-alt-thunderstorm.svg',
         en: 'Heavy rain showers and thunder',
-        et: 'Tugev hoovihm ja äike',
-        fi: 'Kovia sadekuuroja ja ukkonen',
         no: 'Kraftige regnbyger og torden',
-        sv: 'Kraftiga regnskurar och åska'
       },
       heavyrainshowersandthunder_polartwilight: {
         icon: 'wi-day-thunderstorm.svg',
         en: 'Heavy rain showers and thunder',
-        et: 'Tugev hoovihm ja äike',
-        fi: 'Kovia sadekuuroja ja ukkonen',
         no: 'Kraftige regnbyger og torden',
-        sv: 'Kraftiga regnskurar och åska'
       },
       heavysleet: {
         icon: 'wi-sleet.svg',
         en: 'Heavy sleet',
-        et: 'Tugev lörts',
-        fi: 'Kovaa räntää',
         no: 'Kraftig sludd',
-        sv: 'Kraftigt slask'
       },
       heavysleetandthunder: {
         icon: 'wi-sleet.svg',
         en: 'Heavy sleet and thunder',
-        et: 'Tugev lörts ja äike',
-        fi: 'Kovaa räntää ja ukkonen',
         no: 'Kraftig sludd og torden',
-        sv: 'Kraftigt slask och åska'
       },
       heavysleetshowers_day: {
         icon: 'wi-day-sleet.svg',
         en: 'Heavy sleet showers',
-        et: 'Tugevad lörtsihood',
-        fi: 'Kovia räntäkuuroja',
         no: 'Kraftige sluddbyger',
-        sv: 'Kraftiga slaskskurar'
       },
       heavysleetshowers_night: {
         icon: 'wi-night-alt-sleet.svg',
         en: 'Heavy sleet showers',
-        et: 'Tugevad lörtsihood',
-        fi: 'Kovia räntäkuuroja',
         no: 'Kraftige sluddbyger',
-        sv: 'Kraftiga slaskskurar'
       },
       heavysleetshowers_polartwilight: {
         icon: 'wi-day-sleet.svg',
         en: 'Heavy sleet showers',
-        et: 'Tugevad lörtsihood',
-        fi: 'Kovia räntäkuuroja',
         no: 'Kraftige sluddbyger',
-        sv: 'Kraftiga slaskskurar'
       },
       heavysleetshowersandthunder_day: {
         icon: 'wi-day-sleet-storm.svg',
         en: 'Heavy sleet showers and thunder',
-        et: 'Tugevad lörtsihood ja äike',
-        fi: 'Kovia räntäkuuroja ja ukkonen',
         no: 'Kraftige sluddbyger og torden',
-        sv: 'Kraftiga slaskskurar och åska'
       },
       heavysleetshowersandthunder_night: {
         icon: 'wi-night-alt-sleet-storm.svg',
         en: 'Heavy sleet showers and thunder',
-        et: 'Tugevad lörtsihood ja äike',
-        fi: 'Kovia räntäkuuroja ja ukkonen',
         no: 'Kraftige sluddbyger og torden',
-        sv: 'Kraftiga slaskskurar och åska'
       },
       heavysleetshowersandthunder_polartwilight: {
         icon: 'wi-day-sleet-storm.svg',
         en: 'Heavy sleet showers and thunder',
-        et: 'Tugevad lörtsihood ja äike',
-        fi: 'Kovia räntäkuuroja ja ukkonen',
         no: 'Kraftige sluddbyger og torden',
-        sv: 'Kraftiga slaskskurar och åska'
       },
       heavysnow: {
         icon: 'wi-snow.svg',
         en: 'Heavy snow',
-        et: 'Tugev lumesadu',
-        fi: 'Kova lumisade',
         no: 'Kraftig snø',
-        sv: 'Kraftig snö'
       },
       heavysnowandthunder: {
         icon: 'wi-snow.svg',
         en: 'Heavy snow and thunder',
-        et: 'Tugev lumesadu ja äike',
-        fi: 'Kova lumisade ja ukkonen',
         no: 'Kraftig snø og torden',
-        sv: 'Kraftig snö och åska'
       },
       heavysnowshowers_day: {
         icon: 'wi-day-snow.svg',
         en: 'Heavy snow showers',
-        et: 'Tugevad lumehood',
-        fi: 'Kovia lumikuuroja',
         no: 'Kraftige snøbyger',
-        sv: 'Kraftiga snöskurar'
       },
       heavysnowshowers_night: {
         icon: 'wi-night-alt-snow.svg',
         en: 'Heavy snow showers',
-        et: 'Tugevad lumehood',
-        fi: 'Kovia lumikuuroja',
         no: 'Kraftige snøbyger',
-        sv: 'Kraftiga snöskurar'
       },
       heavysnowshowers_polartwilight: {
         icon: 'wi-day-snow.svg',
         en: 'Heavy snow showers',
-        et: 'Tugevad lumehood',
-        fi: 'Kovia lumikuuroja',
         no: 'Kraftige snøbyger',
-        sv: 'Kraftiga snöskurar'
       },
       heavysnowshowersandthunder_day: {
         icon: 'wi-day-snow-thunderstorm.svg',
         en: 'Heavy snow showers and thunder',
-        et: 'Tugevad lumehood ja äike',
-        fi: 'Kovia lumikuuroja ja ukkonen',
         no: 'Kraftige snøbyger og torden',
-        sv: 'Kraftiga snöskurar och åska'
       },
       heavysnowshowersandthunder_night: {
         icon: 'wi-night-alt-snow-thunderstorm.svg',
         en: 'Heavy snow showers and thunder',
-        et: 'Tugevad lumehood ja äike',
-        fi: 'Kovia lumikuuroja ja ukkonen',
         no: 'Kraftige snøbyger og torden',
-        sv: 'Kraftiga snöskurar och åska'
       },
       heavysnowshowersandthunder_polartwilight: {
         icon: 'wi-day-snow-thunderstorm.svg',
         en: 'Heavy snow showers and thunder',
-        et: 'Tugevad lumehood ja äike',
-        fi: 'Kovia lumikuuroja ja ukkonen',
         no: 'Kraftige snøbyger og torden',
-        sv: 'Kraftiga snöskurar och åska'
       },
       lightrain: {
         icon: 'wi-sprinkle.svg',
         en: 'Light rain',
-        et: 'Kerge vihm',
-        fi: 'Heikko sade',
         no: 'Lett regn',
-        sv: 'Lätt regn'
       },
       lightrainandthunder: {
         icon: 'wi-storm-showers.svg',
         en: 'Light rain and thunder',
-        et: 'Kerge vihm ja äike',
-        fi: 'Heikko sade ja ukkonen',
         no: 'Lett regn og torden',
-        sv: 'Lätt regn och åska'
       },
       lightrainshowers_day: {
         icon: 'wi-day-sprinkle.svg',
         en: 'Light rain showers',
-        et: 'Kerge hoovihm',
-        fi: 'Heikkoja sadekuuroja',
         no: 'Lette regnbyger',
-        sv: 'Lätta regnskurar'
       },
       lightrainshowers_night: {
         icon: 'wi-night-alt-sprinkle.svg',
         en: 'Light rain showers',
-        et: 'Kerge hoovihm',
-        fi: 'Heikkoja sadekuuroja',
         no: 'Lette regnbyger',
-        sv: 'Lätta regnskurar'
       },
       lightrainshowers_polartwilight: {
         icon: 'wi-day-sprinkle.svg',
         en: 'Light rain showers',
-        et: 'Kerge hoovihm',
-        fi: 'Heikkoja sadekuuroja',
         no: 'Lette regnbyger',
-        sv: 'Lätta regnskurar'
       },
       lightrainshowersandthunder_day: {
         icon: 'wi-day-storm-showers.svg',
         en: 'Light rain showers and thunder',
-        et: 'Kerge hoovihm ja äike',
-        fi: 'Heikkoja sadekuuroja ja ukkonen',
         no: 'Lette regnbyger og torden',
-        sv: 'Lätta regnskurar och åska'
       },
       lightrainshowersandthunder_night: {
         icon: 'wi-night-alt-storm-showers.svg',
         en: 'Light rain showers and thunder',
-        et: 'Kerge hoovihm ja äike',
-        fi: 'Heikkoja sadekuuroja ja ukkonen',
         no: 'Lette regnbyger og torden',
-        sv: 'Lätta regnskurar och åska'
       },
       lightrainshowersandthunder_polartwilight: {
         icon: 'wi-day-storm-showers.svg',
         en: 'Light rain showers and thunder',
-        et: 'Kerge hoovihm ja äike',
-        fi: 'Heikkoja sadekuuroja ja ukkonen',
         no: 'Lette regnbyger og torden',
-        sv: 'Lätta regnskurar och åska'
       },
       lightsleet: {
         icon: 'wi-sleet.svg',
         en: 'Light sleet',
-        et: 'Kerge lörts',
-        fi: 'Heikko räntä',
         no: 'Lett sludd',
-        sv: 'Lätt slask'
       },
       lightsleetandthunder: {
         icon: 'wi-sleet.svg',
         en: 'Light sleet and thunder',
-        et: 'Kerge lörts ja äike',
-        fi: 'Heikko räntä ja ukkonen',
         no: 'Lett sludd og torden',
-        sv: 'Lätt slask och åska'
       },
       lightsleetshowers_day: {
         icon: 'wi-day-sleet.svg',
         en: 'Light sleet showers',
-        et: 'Kerged lörtsihood',
-        fi: 'Heikkoja räntäkuuroja',
         no: 'Lette sluddbyger',
-        sv: 'Lätta slaskskurar'
       },
       lightsleetshowers_night: {
         icon: 'wi-night-alt-sleet.svg',
         en: 'Light sleet showers',
-        et: 'Kerged lörtsihood',
-        fi: 'Heikkoja räntäkuuroja',
         no: 'Lette sluddbyger',
-        sv: 'Lätta slaskskurar'
       },
       lightsleetshowers_polartwilight: {
         icon: 'wi-day-sleet.svg',
         en: 'Light sleet showers',
-        et: 'Kerged lörtsihood',
-        fi: 'Heikkoja räntäkuuroja',
         no: 'Lette sluddbyger',
-        sv: 'Lätta slaskskurar'
       },
       lightsnow: {
         icon: 'wi-snow.svg',
         en: 'Light snow',
-        et: 'Kerge lumesadu',
-        fi: 'Heikko lumisade',
         no: 'Lett snø',
-        sv: 'Lätt snö'
       },
       lightsnowandthunder: {
         icon: 'wi-snow.svg',
         en: 'Light snow and thunder',
-        et: 'Kerge lumesadu ja äike',
-        fi: 'Heikko lumisade ja ukkonen',
         no: 'Lett snø og torden',
-        sv: 'Lätt snö och åska'
       },
       lightsnowshowers_day: {
         icon: 'wi-day-snow.svg',
         en: 'Light snow showers',
-        et: 'Kerged lumehood',
-        fi: 'Heikkoja lumikuuroja',
         no: 'Lette snøbyger',
-        sv: 'Lätta snöskurar'
       },
       lightsnowshowers_night: {
         icon: 'wi-night-alt-snow.svg',
         en: 'Light snow showers',
-        et: 'Kerged lumehood',
-        fi: 'Heikkoja lumikuuroja',
         no: 'Lette snøbyger',
-        sv: 'Lätta snöskurar'
       },
       lightsnowshowers_polartwilight: {
         icon: 'wi-day-snow.svg',
         en: 'Light snow showers',
-        et: 'Kerged lumehood',
-        fi: 'Heikkoja lumikuuroja',
         no: 'Lette snøbyger',
-        sv: 'Lätta snöskurar'
       },
       lightssleetshowersandthunder_day: {
         icon: 'wi-day-sleet-storm.svg',
         en: 'Light sleet showers and thunder',
-        et: 'Kerged lörtsihood ja äike',
-        fi: 'Heikkoja räntäkuuroja ja ukkonen',
         no: 'Lette sluddbyger og torden',
-        sv: 'Lätta slaskskurar och åska'
       },
       lightssleetshowersandthunder_night: {
         icon: 'wi-night-alt-sleet-storm.svg',
         en: 'Light sleet showers and thunder',
-        et: 'Kerged lörtsihood ja äike',
-        fi: 'Heikkoja räntäkuuroja ja ukkonen',
         no: 'Lette sluddbyger og torden',
-        sv: 'Lätta slaskskurar och åska'
       },
       lightssleetshowersandthunder_polartwilight: {
         icon: 'wi-day-sleet-storm.svg',
         en: 'Light sleet showers and thunder',
-        et: 'Kerged lörtsihood ja äike',
-        fi: 'Heikkoja räntäkuuroja ja ukkonen',
         no: 'Lette sluddbyger og torden',
-        sv: 'Lätta slaskskurar och åska'
       },
       lightssnowshowersandthunder_day: {
         icon: 'wi-day-snow-thunderstorm.svg',
         en: 'Light snow showers and thunder',
-        et: 'Kerged lumehood ja äike',
-        fi: 'Heikkoja lumikuuroja ja ukkonen',
         no: 'Lette snøbyger og torden',
-        sv: 'Lätta snöskurar och åska'
       },
       lightssnowshowersandthunder_night: {
         icon: 'wi-night-alt-snow-thunderstorm.svg',
         en: 'Light snow showers and thunder',
-        et: 'Kerged lumehood ja äike',
-        fi: 'Heikkoja lumikuuroja ja ukkonen',
         no: 'Lette snøbyger og torden',
-        sv: 'Lätta snöskurar och åska'
       },
       lightssnowshowersandthunder_polartwilight: {
         icon: 'wi-day-snow-thunderstorm.svg',
         en: 'Light snow showers and thunder',
-        et: 'Kerged lumehood ja äike',
-        fi: 'Heikkoja lumikuuroja ja ukkonen',
         no: 'Lette snøbyger og torden',
-        sv: 'Lätta snöskurar och åska'
       },
       partlycloudy_day: {
         icon: 'wi-day-cloudy.svg',
         en: 'Partly cloudy',
-        et: 'Vahelduv pilvisus',
-        fi: 'Puolipilvistä',
         no: 'Delvis skyet',
-        sv: 'Halvmulet'
       },
       partlycloudy_night: {
         icon: 'wi-night-alt-partly-cloudy.svg',
         en: 'Partly cloudy',
-        et: 'Vahelduv pilvisus',
-        fi: 'Puolipilvistä',
         no: 'Delvis skyet',
-        sv: 'Halvmulet'
       },
       partlycloudy_polartwilight: {
         icon: 'wi-day-cloudy.svg',
         en: 'Partly cloudy',
-        et: 'Vahelduv pilvisus',
-        fi: 'Puolipilvistä',
         no: 'Delvis skyet',
-        sv: 'Halvmulet'
       },
       rain: {
         icon: 'wi-rain.svg',
         en: 'Rain',
-        et: 'Vihm',
-        fi: 'Sade',
         no: 'Regn',
-        sv: 'Regn'
       },
       rainandthunder: {
         icon: 'wi-thunderstorm.svg',
         en: 'Rain and thunder',
-        et: 'Vihm ja äike',
-        fi: 'Sade ja ukkonen',
         no: 'Regn og torden',
-        sv: 'Regn och åska'
       },
       rainshowers_day: {
         icon: 'wi-day-showers.svg',
         en: 'Rain showers',
-        et: 'Hoovihm',
-        fi: 'Sadekuuroja',
         no: 'Regnbyger',
-        sv: 'Regnskurar'
       },
       rainshowers_night: {
         icon: 'wi-night-alt-showers.svg',
         en: 'Rain showers',
-        et: 'Hoovihm',
-        fi: 'Sadekuuroja',
         no: 'Regnbyger',
-        sv: 'Regnskurar'
       },
       rainshowers_polartwilight: {
         icon: 'wi-day-showers.svg',
         en: 'Rain showers',
-        et: 'Hoovihm',
-        fi: 'Sadekuuroja',
         no: 'Regnbyger',
-        sv: 'Regnskurar'
       },
       rainshowersandthunder_day: {
         icon: 'wi-day-storm-showers.svg',
         en: 'Rain showers and thunder',
-        et: 'Hoovihm ja äike',
-        fi: 'Sadekuuroja ja ukkonen',
         no: 'Regnbyger og torden',
-        sv: 'Regnskurar och åska'
       },
       rainshowersandthunder_night: {
         icon: 'wi-night-alt-storm-showers.svg',
         en: 'Rain showers and thunder',
-        et: 'Hoovihm ja äike',
-        fi: 'Sadekuuroja ja ukkonen',
         no: 'Regnbyger og torden',
-        sv: 'Regnskurar och åska'
       },
       rainshowersandthunder_polartwilight: {
         icon: 'wi-day-storm-showers.svg',
         en: 'Rain showers and thunder',
-        et: 'Hoovihm ja äike',
-        fi: 'Sadekuuroja ja ukkonen',
         no: 'Regnbyger og torden',
-        sv: 'Regnskurar och åska'
       },
       sleet: {
         icon: 'wi-sleet.svg',
         en: 'Sleet',
-        et: 'Lörts',
-        fi: 'Räntää',
         no: 'Sludd',
-        sv: 'Slask'
       },
       sleetandthunder: {
         icon: 'wi-sleet.svg',
         en: 'Sleet and thunder',
-        et: 'Lörts ja äike',
-        fi: 'Räntää ja ukkonen',
         no: 'Sludd og torden',
-        sv: 'Slask och åska'
       },
       sleetshowers_day: {
         icon: 'wi-day-sleet.svg',
         en: 'Sleet showers',
-        et: 'Lörtsihood',
-        fi: 'Räntäkuuroja',
         no: 'Sluddbyger',
-        sv: 'Slaskskurar'
       },
       sleetshowers_night: {
         icon: 'wi-night-alt-sleet.svg',
         en: 'Sleet showers',
-        et: 'Lörtsihood',
-        fi: 'Räntäkuuroja',
         no: 'Sluddbyger',
-        sv: 'Slaskskurar'
       },
       sleetshowers_polartwilight: {
         icon: 'wi-day-sleet.svg',
         en: 'Sleet showers',
-        et: 'Lörtsihood',
-        fi: 'Räntäkuuroja',
         no: 'Sluddbyger',
-        sv: 'Slaskskurar'
       },
       sleetshowersandthunder_day: {
         icon: 'wi-day-sleet-storm.svg',
         en: 'Sleet showers and thunder',
-        et: 'Lörtsihood ja äike',
-        fi: 'Räntäkuuroja ja ukkonen',
         no: 'Sluddbyger og torden',
-        sv: 'Slaskskurar och åska'
       },
       sleetshowersandthunder_night: {
         icon: 'wi-night-alt-sleet-storm.svg',
         en: 'Sleet showers and thunder',
-        et: 'Lörtsihood ja äike',
-        fi: 'Räntäkuuroja ja ukkonen',
         no: 'Sluddbyger og torden',
-        sv: 'Slaskskurar och åska'
       },
       sleetshowersandthunder_polartwilight: {
         icon: 'wi-day-sleet-storm.svg',
         en: 'Sleet showers and thunder',
-        et: 'Lörtsihood ja äike',
-        fi: 'Räntäkuuroja ja ukkonen',
         no: 'Sluddbyger og torden',
-        sv: 'Slaskskurar och åska'
       },
       snow: {
         icon: 'wi-snow.svg',
         en: 'Snow',
-        et: 'Lumesadu',
-        fi: 'Lumisade',
         no: 'Snø',
-        sv: 'Snö'
       },
       snowandthunder: {
         icon: 'wi-snow.svg',
         en: 'Snow and thunder',
-        et: 'Lumesadu ja äike',
-        fi: 'Lumisade ja ukkonen',
         no: 'Snø og torden',
-        sv: 'Snö och åska'
       },
       snowshowers_day: {
         icon: 'wi-day-snow.svg',
         en: 'Snow showers',
-        et: 'Lumehood',
-        fi: 'Lumikuuroja',
         no: 'Snøbyger',
-        sv: 'Snöskurar'
       },
       snowshowers_night: {
         icon: 'wi-night-alt-snow.svg',
         en: 'Snow showers',
-        et: 'Lumehood',
-        fi: 'Lumikuuroja',
         no: 'Snøbyger',
-        sv: 'Snöskurar'
       },
       snowshowers_polartwilight: {
         icon: 'wi-day-snow.svg',
         en: 'Snow showers',
-        et: 'Lumehood',
-        fi: 'Lumikuuroja',
         no: 'Snøbyger',
-        sv: 'Snöskurar'
       },
       snowshowersandthunder_day: {
         icon: 'wi-day-snow-thunderstorm.svg',
         en: 'Snow showers and thunder',
-        et: 'Lumehood ja äike',
-        fi: 'Lumikuuroja ja ukkonen',
         no: 'Snøbyger og torden',
-        sv: 'Snöskurar och åska'
       },
       snowshowersandthunder_night: {
         icon: 'wi-night-alt-snow-thunderstorm.svg',
         en: 'Snow showers and thunder',
-        et: 'Lumehood ja äike',
-        fi: 'Lumikuuroja ja ukkonen',
         no: 'Snøbyger og torden',
-        sv: 'Snöskurar och åska'
       },
       snowshowersandthunder_polartwilight: {
         icon: 'wi-day-snow-thunderstorm.svg',
         en: 'Snow showers and thunder',
-        et: 'Lumehood ja äike',
-        fi: 'Lumikuuroja ja ukkonen',
         no: 'Snøbyger og torden',
-        sv: 'Snöskurar och åska'
       }
     }
 
     const days = {
       now: {
         en: 'Now',
-        et: 'Praegu',
-        fi: 'Nyt',
         no: 'Nå',
-        sv: 'Nu'
       },
       today: {
         en: 'Today',
-        et: 'Täna',
-        fi: 'Tänään',
         no: 'I dag',
-        sv: 'Idag'
       },
       tomorrow: {
         en: 'Tomorrow',
-        et: 'Homme',
-        fi: 'Huomenna',
         no: 'I morgen',
-        sv: 'Imorgon'
       },
       monday: {
         en: 'Monday',
-        et: 'Esmaspäev',
-        fi: 'Maanantai',
         no: 'Mandag',
-        sv: 'Måndag'
       },
       tuesday: {
         en: 'Tuesday',
-        et: 'Teisipäev',
-        fi: 'Tiistai',
         no: 'Tirsdag',
-        sv: 'Tisdag'
       },
       wednesday: {
         en: 'Wednesday',
-        et: 'Kolmapäev',
-        fi: 'Keskiviikko',
         no: 'Onsdag',
-        sv: 'Onsdag'
       },
       thursday: {
         en: 'Thursday',
-        et: 'Neljapäev',
-        fi: 'Torstai',
         no: 'Torsdag',
-        sv: 'Torsdag'
       },
       friday: {
         en: 'Friday',
-        et: 'Reede',
-        fi: 'Perjantai',
         no: 'Fredag',
-        sv: 'Fredag'
       },
       saturday: {
         en: 'Saturday',
-        et: 'Laupäev',
-        fi: 'Lauantai',
         no: 'Lørdag',
-        sv: 'Lördag'
       },
       sunday: {
         en: 'Sunday',
-        et: 'Pühapäev',
-        fi: 'Sunnuntai',
         no: 'Søndag',
-        sv: 'Söndag'
       }
     }
 

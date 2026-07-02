@@ -1,19 +1,6 @@
 {% assign lang = trmnl.plugin_settings.custom_fields_values.language | default: "en" %}
 
 {% case lang %}
-{% when "et" %}
-{% assign t_feels = "Tundub nagu" %}
-{% assign t_wind = "Tuul" %}
-{% assign t_precip = "Sademed" %}
-{% assign t_humidity = "Õhuniiskus" %}
-{% assign t_pressure = "Õhurõhk" %}
-{% assign t_clouds = "Pilvisus" %}
-{% assign t_uv = "UV-indeks" %}
-{% assign t_sunscreen = "Päikesekreem" %}
-{% assign t_now = "Praegu" %}
-{% assign t_tomorrow = "Homme" %}
-{% assign t_unsupported = "Toetatud ainult TRMNL X-il" %}
-{% assign t_unsupported_hint = "Kasuta sellel seadmel pool- või veerandpaigutusi." %}
 {% when "no" %}
 {% assign t_feels = "Føles som" %}
 {% assign t_wind = "Vind" %}
@@ -27,32 +14,6 @@
 {% assign t_tomorrow = "I morgen" %}
 {% assign t_unsupported = "Støttes kun på TRMNL X" %}
 {% assign t_unsupported_hint = "Bruk halv- eller kvadrantoppsettene på denne enheten." %}
-{% when "fi" %}
-{% assign t_feels = "Tuntuu kuin" %}
-{% assign t_wind = "Tuuli" %}
-{% assign t_precip = "Sade" %}
-{% assign t_humidity = "Kosteus" %}
-{% assign t_pressure = "Ilmanpaine" %}
-{% assign t_clouds = "Pilvisyys" %}
-{% assign t_uv = "UV-indeksi" %}
-{% assign t_sunscreen = "Aurinkovoide" %}
-{% assign t_now = "Nyt" %}
-{% assign t_tomorrow = "Huomenna" %}
-{% assign t_unsupported = "Tuettu vain TRMNL X:llä" %}
-{% assign t_unsupported_hint = "Käytä tällä laitteella puolikas- tai neljännesasetteluja." %}
-{% when "sv" %}
-{% assign t_feels = "Känns som" %}
-{% assign t_wind = "Vind" %}
-{% assign t_precip = "Nederbörd" %}
-{% assign t_humidity = "Luftfuktighet" %}
-{% assign t_pressure = "Lufttryck" %}
-{% assign t_clouds = "Molnighet" %}
-{% assign t_uv = "UV-index" %}
-{% assign t_sunscreen = "Solkräm" %}
-{% assign t_now = "Nu" %}
-{% assign t_tomorrow = "Imorgon" %}
-{% assign t_unsupported = "Stöds endast på TRMNL X" %}
-{% assign t_unsupported_hint = "Använd halv- eller kvadrantlayouterna på den här enheten." %}
 {% else %}
 {% assign t_feels = "Feels like" %}
 {% assign t_wind = "Wind" %}
