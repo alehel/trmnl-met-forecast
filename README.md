@@ -4,11 +4,11 @@ A weather forecast plugin for [TRMNL](https://usetrmnl.com) e-paper screens that
 
 ## Screenshots
 
-Summer afternoon (English) — current conditions with UV and sunscreen window, today hour by hour with the current hour highlighted, tomorrow in 2-hour steps, then 6-hour blocks:
+Summer (English) — current conditions with UV and sunscreen window, the next 30 hours hour by hour with the current hour highlighted, and 6-hour blocks for the next three days:
 
 ![Full layout, summer afternoon, English](screenshots/full-summer-en.png)
 
-Winter night (Norwegian) — negative temperatures, max/min ranges in the 6-hour blocks, no sunscreen window:
+Winter (Norwegian) — negative temperatures, max/min ranges in the 6-hour blocks, no sunscreen window:
 
 ![Full layout, winter night, Norwegian](screenshots/full-winter-no.png)
 
@@ -17,7 +17,7 @@ Winter night (Norwegian) — negative temperatures, max/min ranges in the 6-hour
 **Features:**
 - **Current Conditions Panel**: Large weather icon with temperature, "feels like" temperature (wind chill/heat index), wind speed and direction, precipitation, humidity, pressure, and cloud cover
 - **UV & Sunscreen Window**: Current clear-sky UV index and the time range when UV is forecast to be 3 or higher — i.e. when sunscreen is recommended (rolls over to tomorrow's window in the evening)
-- **Hour-by-hour Timeline**: Today always shows all 24 hours — past hours as dimmed placeholders (the met.no forecast API carries no past data) and the current hour highlighted — followed by tomorrow in 2-hour rows (precipitation summed, temperature averaged) and 6-hour blocks with max/min temperatures for the two days after, with day headers and dates at each day change
+- **Hour-by-hour Timeline**: The next 30 hours hour by hour with the current hour highlighted, plus 6-hour blocks with max/min temperatures for the next three days, following the API's native forecast windows
 - **Configurable Location**: Set custom latitude and longitude coordinates for any location
 - **Multi-language Support**: Available in English and Norwegian
 

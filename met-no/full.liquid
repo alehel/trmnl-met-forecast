@@ -33,9 +33,8 @@
 {% assign cur_symbol = current.data.next_1_hours.summary.symbol_code | default: current.data.next_6_hours.summary.symbol_code %}
 {% assign cur_precip = current.data.next_1_hours.details.precipitation_amount | default: 0 | round: 1 %}
 {% assign now_time = "now" | date: "%s" | plus: trmnl.user.utc_offset | date: "%H:%M" %}
-{% assign first_epoch = current.time | date: "%s" | plus: 0 %}
-{% assign ts0_day = first_epoch | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
-{% assign ts0_hour = first_epoch | plus: trmnl.user.utc_offset | date: "%H" | plus: 0 %}
+{% assign day2 = "now" | date: "%s" | plus: trmnl.user.utc_offset | plus: 172800 | date: "%Y-%m-%d" %}
+{% assign day3 = "now" | date: "%s" | plus: trmnl.user.utc_offset | plus: 259200 | date: "%Y-%m-%d" %}
 
 {% comment %}
 Find the window where the clear-sky UV index is 3 or higher. When the
@@ -147,115 +146,39 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
   </div>
 
   <div class="wx-forecast">
-    {% assign slots = 0 %}
-    {% assign day = "" %}
-    {% assign last_agg_end = 0 %}
-
-    {% comment %} Today always shows all 24 hours; hours already gone render as empty rows {% endcomment %}
-    {% if ts0_day == today %}
-    {% assign today_date = first_epoch | plus: trmnl.user.utc_offset | date: "%-d.%-m." %}
-    {% render "x_header", key: "today", label: "Today", date: today_date %}
-    {% assign day = today %}
-    {% assign slots = 1 %}
-    {% for ph in (0..23) %}
-    {% if ph >= ts0_hour %}{% break %}{% endif %}
-    {% if ph < 10 %}
-    {% assign ph_label = "0" | append: ph %}
-    {% else %}
-    {% assign ph_label = ph %}
-    {% endif %}
-    {% render "x_row_empty", time_label: ph_label %}
-    {% assign slots = slots | plus: 1 %}
-    {% endfor %}
-    {% endif %}
-
+    {% comment %} First two columns: hour-by-hour forecast for the next 30 hours {% endcomment %}
+    {% assign hourly_count = 0 %}
     {% for event in properties.timeseries %}
-    {% assign event_epoch = event.time | date: "%s" | plus: 0 %}
-    {% assign local_epoch = event_epoch | plus: trmnl.user.utc_offset %}
-    {% assign event_day = local_epoch | date: "%Y-%m-%d" %}
-    {% assign event_hour = local_epoch | date: "%H" %}
-
-    {% if event_day < today %}{% continue %}{% endif %}
-
-    {% assign is_hourly = false %}
-    {% if event_day == today and event.data.next_1_hours %}
-    {% assign is_hourly = true %}
-    {% endif %}
-
+    {% unless event.data.next_1_hours %}{% continue %}{% endunless %}
+    {% assign event_hour = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%H" %}
     {% assign is_now = false %}
-    {% if is_hourly %}
-    {% assign time_label = event_hour %}
+    {% if hourly_count == 0 %}
+    {% assign is_now = true %}
+    {% endif %}
     {% assign symbol = event.data.next_1_hours.summary.symbol_code %}
     {% assign precip = event.data.next_1_hours.details.precipitation_amount | default: 0 | round: 1 %}
     {% assign temp = event.data.instant.details.air_temperature | round %}
-    {% assign temp2 = nil %}
-    {% if forloop.first %}
-    {% assign is_now = true %}
-    {% endif %}
-    {% else %}
-    {% comment %} Aggregated rows: 2-hour steps for tomorrow, 6-hour blocks for later days {% endcomment %}
-    {% if event_day == tomorrow and event.data.next_1_hours %}
-    {% assign block_hours = 2 %}
-    {% assign hour_mod = event_hour | plus: 0 | modulo: 2 %}
-    {% elsif event.data.next_6_hours %}
-    {% comment %} 6-hour blocks follow the api's native windows (00/06/12/18 UTC), so the
-    chunking stays identical before and after the timeseries drops to 6-hour granularity {% endcomment %}
-    {% assign block_hours = 6 %}
-    {% assign hour_mod = event.time | date: "%H" | plus: 0 | modulo: 6 %}
-    {% else %}
-    {% continue %}
-    {% endif %}
-    {% if hour_mod != 0 %}{% continue %}{% endif %}
-    {% if event_epoch < last_agg_end %}{% continue %}{% endif %}
-
-    {% if block_hours == 2 %}
-    {% assign duration = 7200 %}
-    {% assign symbol = event.data.next_1_hours.summary.symbol_code %}
-    {% assign i1 = forloop.index0 | plus: 1 %}
-    {% assign p0 = event.data.next_1_hours.details.precipitation_amount | default: 0 %}
-    {% assign p1 = properties.timeseries[i1].data.next_1_hours.details.precipitation_amount | default: 0 %}
-    {% assign precip = p0 | plus: p1 | round: 1 %}
-
-    {% comment %} Average the instant temperatures available inside the block {% endcomment %}
-    {% assign block_end = event_epoch | plus: duration %}
-    {% assign t_sum = event.data.instant.details.air_temperature | plus: 0.0 %}
-    {% assign t_count = 1 %}
-    {% assign base_i = forloop.index0 %}
-    {% for step in (1..2) %}
-    {% assign ni = base_i | plus: step %}
-    {% assign nxt = properties.timeseries[ni] %}
-    {% unless nxt.data.instant.details.air_temperature %}{% break %}{% endunless %}
-    {% assign n_epoch = nxt.time | date: "%s" | plus: 0 %}
-    {% if n_epoch > block_end %}{% break %}{% endif %}
-    {% assign t_sum = t_sum | plus: nxt.data.instant.details.air_temperature %}
-    {% assign t_count = t_count | plus: 1 %}
+    {% assign wind = event.data.instant.details.wind_speed | round %}
+    {% render "x_row", time_label: event_hour, symbol_code: symbol, temp: temp, wind: wind, precip: precip, precip_unit: units.precipitation_amount, wind_unit: units.wind_speed, highlight: is_now %}
+    {% assign hourly_count = hourly_count | plus: 1 %}
+    {% if hourly_count >= 30 %}{% break %}{% endif %}
     {% endfor %}
-    {% assign temp = t_sum | divided_by: t_count | round %}
-    {% assign temp2 = nil %}
-    {% else %}
-    {% assign duration = 21600 %}
-    {% assign symbol = event.data.next_6_hours.summary.symbol_code %}
-    {% assign precip = event.data.next_6_hours.details.precipitation_amount | default: 0 | round: 1 %}
-    {% if event.data.next_6_hours.details.air_temperature_max %}
-    {% assign temp = event.data.next_6_hours.details.air_temperature_max | round %}
-    {% assign temp2 = event.data.next_6_hours.details.air_temperature_min | round %}
-    {% else %}
-    {% assign temp = event.data.instant.details.air_temperature | round %}
-    {% assign temp2 = nil %}
-    {% endif %}
-    {% endif %}
-    {% assign last_agg_end = event_epoch | plus: duration %}
 
-    {% assign end_hour = local_epoch | plus: duration | date: "%H" %}
-    {% assign time_label = event_hour | append: "–" | append: end_hour %}
-    {% endif %}
+    {% comment %} Third column: 6-hour blocks for the next three days, on the api's native
+    UTC windows (00/06/12/18), with max/min temperatures {% endcomment %}
+    {% assign day = "" %}
+    {% assign slots = 0 %}
+    {% for event in properties.timeseries %}
+    {% unless event.data.next_6_hours %}{% continue %}{% endunless %}
+    {% assign utc_mod = event.time | date: "%H" | plus: 0 | modulo: 6 %}
+    {% if utc_mod != 0 %}{% continue %}{% endif %}
+
+    {% assign local_epoch = event.time | date: "%s" | plus: trmnl.user.utc_offset %}
+    {% assign event_day = local_epoch | date: "%Y-%m-%d" %}
+    {% unless event_day == tomorrow or event_day == day2 or event_day == day3 %}{% continue %}{% endunless %}
 
     {% if event_day != day %}
-    {% if slots > 46 %}{% break %}{% endif %}
-    {% if event_day == today %}
-    {% assign day_key = "today" %}
-    {% assign day_label = "Today" %}
-    {% elsif event_day == tomorrow %}
+    {% if event_day == tomorrow %}
     {% assign day_key = "tomorrow" %}
     {% assign day_label = "Tomorrow" %}
     {% else %}
@@ -268,11 +191,22 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     {% assign slots = slots | plus: 1 %}
     {% endif %}
 
+    {% assign event_hour = local_epoch | date: "%H" %}
+    {% assign end_hour = local_epoch | plus: 21600 | date: "%H" %}
+    {% assign time_label = event_hour | append: "–" | append: end_hour %}
+    {% assign symbol = event.data.next_6_hours.summary.symbol_code %}
+    {% assign precip = event.data.next_6_hours.details.precipitation_amount | default: 0 | round: 1 %}
+    {% if event.data.next_6_hours.details.air_temperature_max %}
+    {% assign temp = event.data.next_6_hours.details.air_temperature_max | round %}
+    {% assign temp2 = event.data.next_6_hours.details.air_temperature_min | round %}
+    {% else %}
+    {% assign temp = event.data.instant.details.air_temperature | round %}
+    {% assign temp2 = nil %}
+    {% endif %}
     {% assign wind = event.data.instant.details.wind_speed | round %}
-    {% render "x_row", time_label: time_label, symbol_code: symbol, temp: temp, temp2: temp2, wind: wind, precip: precip, precip_unit: units.precipitation_amount, wind_unit: units.wind_speed, highlight: is_now %}
+    {% render "x_row", time_label: time_label, symbol_code: symbol, temp: temp, temp2: temp2, wind: wind, precip: precip, precip_unit: units.precipitation_amount, wind_unit: units.wind_speed %}
     {% assign slots = slots | plus: 1 %}
-    {% if slots >= 48 %}{% break %}{% endif %}
-
+    {% if slots >= 15 %}{% break %}{% endif %}
     {% endfor %}
   </div>
 
@@ -378,7 +312,7 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     flex: 1;
     min-width: 0;
     display: grid;
-    grid-template-rows: repeat(16, 1fr);
+    grid-template-rows: repeat(15, 1fr);
     grid-auto-flow: column;
     grid-auto-columns: calc((100% - 52px) / 3);
     column-gap: 26px;
@@ -387,7 +321,7 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     align-self: end;
     margin-bottom: 3px;
   }
-  .wx-forecast .wx-head:nth-child(16n + 1) {
+  .wx-forecast .wx-head:nth-child(15n + 1) {
     align-self: start;
     margin-bottom: 0;
   }
@@ -401,9 +335,6 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
   .wx-row-temp small {
     font-size: 11px;
     font-weight: 600;
-  }
-  .wx-row--past .wx-row-time {
-    color: #999;
   }
   .wx-row--now {
     background: #ccc;

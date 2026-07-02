@@ -18,12 +18,6 @@
 </div>
 {% endtemplate %}
 
-{% template x_row_empty %}
-<div class="wx-row wx-row--past">
-  <span class="wx-row-time">{{ time_label }}</span>
-</div>
-{% endtemplate %}
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const weather = {
@@ -448,10 +442,6 @@
       now: {
         en: 'Now',
         no: 'Nå',
-      },
-      today: {
-        en: 'Today',
-        no: 'I dag',
       },
       tomorrow: {
         en: 'Tomorrow',
