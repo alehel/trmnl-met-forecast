@@ -8,6 +8,10 @@
 {% assign t_humidity = "Õhuniiskus" %}
 {% assign t_pressure = "Õhurõhk" %}
 {% assign t_clouds = "Pilvisus" %}
+{% assign t_uv = "UV-indeks" %}
+{% assign t_sunscreen = "Päikesekreem" %}
+{% assign t_now = "Praegu" %}
+{% assign t_tomorrow = "Homme" %}
 {% when "no" %}
 {% assign t_feels = "Føles som" %}
 {% assign t_wind = "Vind" %}
@@ -15,6 +19,10 @@
 {% assign t_humidity = "Luftfuktighet" %}
 {% assign t_pressure = "Lufttrykk" %}
 {% assign t_clouds = "Skydekke" %}
+{% assign t_uv = "UV-indeks" %}
+{% assign t_sunscreen = "Solkrem" %}
+{% assign t_now = "Nå" %}
+{% assign t_tomorrow = "I morgen" %}
 {% when "fi" %}
 {% assign t_feels = "Tuntuu kuin" %}
 {% assign t_wind = "Tuuli" %}
@@ -22,6 +30,10 @@
 {% assign t_humidity = "Kosteus" %}
 {% assign t_pressure = "Ilmanpaine" %}
 {% assign t_clouds = "Pilvisyys" %}
+{% assign t_uv = "UV-indeksi" %}
+{% assign t_sunscreen = "Aurinkovoide" %}
+{% assign t_now = "Nyt" %}
+{% assign t_tomorrow = "Huomenna" %}
 {% when "sv" %}
 {% assign t_feels = "Känns som" %}
 {% assign t_wind = "Vind" %}
@@ -29,6 +41,10 @@
 {% assign t_humidity = "Luftfuktighet" %}
 {% assign t_pressure = "Lufttryck" %}
 {% assign t_clouds = "Molnighet" %}
+{% assign t_uv = "UV-index" %}
+{% assign t_sunscreen = "Solkräm" %}
+{% assign t_now = "Nu" %}
+{% assign t_tomorrow = "Imorgon" %}
 {% else %}
 {% assign t_feels = "Feels like" %}
 {% assign t_wind = "Wind" %}
@@ -36,6 +52,10 @@
 {% assign t_humidity = "Humidity" %}
 {% assign t_pressure = "Pressure" %}
 {% assign t_clouds = "Cloud cover" %}
+{% assign t_uv = "UV index" %}
+{% assign t_sunscreen = "Sunscreen" %}
+{% assign t_now = "Now" %}
+{% assign t_tomorrow = "Tomorrow" %}
 {% endcase %}
 
 {% assign units = properties.meta.units %}
@@ -46,6 +66,42 @@
 {% assign now_time = "now" | date: "%s" | plus: trmnl.user.utc_offset | date: "%H:%M" %}
 {% assign first_epoch = current.time | date: "%s" | plus: 0 %}
 {% assign hourly_until = first_epoch | plus: 86400 %}
+
+{% comment %} Find the next window where the clear-sky UV index is 3 or higher {% endcomment %}
+{% assign uv_range = "" %}
+{% assign uv_in_window = false %}
+{% assign uv_start_label = "" %}
+{% assign uv_end_label = "" %}
+{% for event in properties.timeseries %}
+{% assign uv = event.data.instant.details.ultraviolet_index_clear_sky %}
+{% unless uv %}{% continue %}{% endunless %}
+{% assign uv_local = event.time | date: "%s" | plus: trmnl.user.utc_offset %}
+{% if uv_in_window %}
+{% if uv < 3 %}
+{% assign uv_end_label = uv_local | date: "%H" %}
+{% break %}
+{% endif %}
+{% elsif uv >= 3 %}
+{% assign uv_in_window = true %}
+{% if forloop.first %}
+{% assign uv_start_label = t_now %}
+{% else %}
+{% assign uv_day = uv_local | date: "%Y-%m-%d" %}
+{% assign uv_start_hour = uv_local | date: "%H" %}
+{% if uv_day == today %}
+{% assign uv_start_label = uv_start_hour %}
+{% elsif uv_day == tomorrow %}
+{% assign uv_start_label = t_tomorrow | append: " " | append: uv_start_hour %}
+{% else %}
+{% assign uv_in_window = false %}
+{% break %}
+{% endif %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% if uv_in_window and uv_end_label != "" %}
+{% assign uv_range = uv_start_label | append: "–" | append: uv_end_label %}
+{% endif %}
 
 <div class="layout wx">
   <div class="wx-current" data-code="{{ cur_symbol }}">
@@ -87,6 +143,17 @@
       <div class="wx-metric">
         <span class="wx-metric-label">{{ t_clouds }}</span>
         <span class="wx-metric-value">{{ cur.cloud_area_fraction | round }}{{ units.cloud_area_fraction }}</span>
+      </div>
+    </div>
+
+    <div class="wx-metrics">
+      <div class="wx-metric">
+        <span class="wx-metric-label">{{ t_uv }}</span>
+        <span class="wx-metric-value">{% if cur.ultraviolet_index_clear_sky %}{{ cur.ultraviolet_index_clear_sky | round }}{% else %}–{% endif %}</span>
+      </div>
+      <div class="wx-metric">
+        <span class="wx-metric-label">{{ t_sunscreen }}</span>
+        <span class="wx-metric-value">{% if uv_range == "" %}–{% else %}{{ uv_range }}{% endif %}</span>
       </div>
     </div>
   </div>

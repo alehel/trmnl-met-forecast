@@ -4,7 +4,7 @@ no_screen_padding: 'no'
 dark_mode: 'no'
 static_data: ''
 polling_verb: get
-polling_url: https://api.met.no/weatherapi/locationforecast/2.0/compact.json?lat={{ latitude }}&lon={{ longitude }}
+polling_url: https://api.met.no/weatherapi/locationforecast/2.0/complete.json?lat={{ latitude }}&lon={{ longitude }}
 polling_headers: user-agent=TRMNL
 polling_body: ''
 id: 132448
