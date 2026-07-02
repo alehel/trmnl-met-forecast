@@ -91,7 +91,7 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
 {% assign uv_range = uv_start_label | append: "–" | append: uv_end_label %}
 {% endif %}
 
-<div class="layout wx">
+<div class="layout layout--stretch wx">
   <div class="wx-current" data-code="{{ cur_symbol }}">
     <div class="wx-head">
       <span class="wx-head-day" data-day-key="now">Now</span>
@@ -287,9 +287,12 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
   .wx {
     display: flex;
     flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
     gap: 26px;
     width: 100%;
     height: 100%;
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
   .wx-head {
     display: flex;
