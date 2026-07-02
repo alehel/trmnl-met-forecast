@@ -1,6 +1,18 @@
 # Met.no Weather Forecast for TRMNL
 
-A weather forecast plugin for [TRMNL](https://usetrmnl.com) e-paper screens that displays current and upcoming weather conditions using data from The Norwegian Meteorological Institute ([met.no](https://www.met.no)).
+A weather forecast plugin for [TRMNL](https://usetrmnl.com) e-paper screens that displays current and upcoming weather conditions using data from The Norwegian Meteorological Institute ([met.no](https://www.met.no)). The full-screen layout is designed for the TRMNL X (1040×780).
+
+## Screenshots
+
+Summer afternoon (English) — current conditions with UV and sunscreen window, today hour by hour with the current hour highlighted, tomorrow in 2-hour steps, then 6-hour blocks:
+
+![Full layout, summer afternoon, English](screenshots/full-summer-en.png)
+
+Winter night (Norwegian) — negative temperatures, max/min ranges in the 6-hour blocks, no sunscreen window:
+
+![Full layout, winter night, Norwegian](screenshots/full-winter-no.png)
+
+*The previews are rendered with placeholder weather glyphs; on the device the plugin uses TRMNL's hosted weather icon set.*
 
 **Features:**
 - **Current Conditions Panel** (full layout, designed for TRMNL X): Large weather icon with temperature, "feels like" temperature (wind chill/heat index), wind speed and direction, precipitation, humidity, pressure, and cloud cover
