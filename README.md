@@ -14,3 +14,7 @@ A weather forecast plugin for [TRMNL](https://usetrmnl.com) e-paper screens that
 - **Detailed Metrics**: Temperature, wind speed, and precipitation amount for each forecast period
 
 **Location:** `/met-no/`
+
+## Credits
+
+This project is based on [argoroots/trmnl](https://github.com/argoroots/trmnl) by [Argo Roots](https://github.com/argoroots), whose met.no plugin provided the original layouts, weather symbol mapping, and translations. The TRMNL X full-screen redesign, UV/sunscreen section, and aggregation logic were built on top of that foundation. The original work is MIT licensed, and this repository retains its license.
