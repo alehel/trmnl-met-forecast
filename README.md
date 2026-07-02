@@ -1,6 +1,6 @@
 # Met.no Weather Forecast for TRMNL
 
-A weather forecast plugin for [TRMNL](https://usetrmnl.com) e-paper screens that displays current and upcoming weather conditions using data from The Norwegian Meteorological Institute ([met.no](https://www.met.no)). The full-screen layout is designed for the TRMNL X (1040×780).
+A weather forecast plugin for [TRMNL](https://usetrmnl.com) e-paper screens that displays current and upcoming weather conditions using data from The Norwegian Meteorological Institute ([met.no](https://www.met.no)). The full-screen layout is designed for the TRMNL X (1040×780); on smaller screens it shows an "only supported on TRMNL X" notice instead — use the half or quadrant layouts there.
 
 ## Screenshots
 

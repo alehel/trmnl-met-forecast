@@ -12,6 +12,8 @@
 {% assign t_sunscreen = "Päikesekreem" %}
 {% assign t_now = "Praegu" %}
 {% assign t_tomorrow = "Homme" %}
+{% assign t_unsupported = "Toetatud ainult TRMNL X-il" %}
+{% assign t_unsupported_hint = "Kasuta sellel seadmel pool- või veerandpaigutusi." %}
 {% when "no" %}
 {% assign t_feels = "Føles som" %}
 {% assign t_wind = "Vind" %}
@@ -23,6 +25,8 @@
 {% assign t_sunscreen = "Solkrem" %}
 {% assign t_now = "Nå" %}
 {% assign t_tomorrow = "I morgen" %}
+{% assign t_unsupported = "Støttes kun på TRMNL X" %}
+{% assign t_unsupported_hint = "Bruk halv- eller kvadrantoppsettene på denne enheten." %}
 {% when "fi" %}
 {% assign t_feels = "Tuntuu kuin" %}
 {% assign t_wind = "Tuuli" %}
@@ -34,6 +38,8 @@
 {% assign t_sunscreen = "Aurinkovoide" %}
 {% assign t_now = "Nyt" %}
 {% assign t_tomorrow = "Huomenna" %}
+{% assign t_unsupported = "Tuettu vain TRMNL X:llä" %}
+{% assign t_unsupported_hint = "Käytä tällä laitteella puolikas- tai neljännesasetteluja." %}
 {% when "sv" %}
 {% assign t_feels = "Känns som" %}
 {% assign t_wind = "Vind" %}
@@ -45,6 +51,8 @@
 {% assign t_sunscreen = "Solkräm" %}
 {% assign t_now = "Nu" %}
 {% assign t_tomorrow = "Imorgon" %}
+{% assign t_unsupported = "Stöds endast på TRMNL X" %}
+{% assign t_unsupported_hint = "Använd halv- eller kvadrantlayouterna på den här enheten." %}
 {% else %}
 {% assign t_feels = "Feels like" %}
 {% assign t_wind = "Wind" %}
@@ -56,6 +64,8 @@
 {% assign t_sunscreen = "Sunscreen" %}
 {% assign t_now = "Now" %}
 {% assign t_tomorrow = "Tomorrow" %}
+{% assign t_unsupported = "Only supported on TRMNL X" %}
+{% assign t_unsupported_hint = "Use the half or quadrant layouts on this device." %}
 {% endcase %}
 
 {% assign units = properties.meta.units %}
@@ -308,6 +318,13 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
 
     {% endfor %}
   </div>
+
+  <div class="wx-unsupported">
+    <div>
+      <div class="wx-unsupported-title">{{ t_unsupported }}</div>
+      <div class="wx-unsupported-hint">{{ t_unsupported_hint }}</div>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -462,5 +479,30 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
   }
   .weather-icon:not([src]) {
     visibility: hidden;
+  }
+  .wx-unsupported {
+    display: none;
+  }
+  {% comment %} The full layout is designed for the TRMNL X viewport (1040x780) {% endcomment %}
+  @media (max-width: 1000px), (max-height: 700px) {
+    .wx-current,
+    .wx-forecast {
+      display: none;
+    }
+    .wx-unsupported {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .wx-unsupported-title {
+      font-size: 26px;
+      font-weight: 700;
+    }
+    .wx-unsupported-hint {
+      font-size: 15px;
+      margin-top: 8px;
+    }
   }
 </style>
