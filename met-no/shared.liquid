@@ -105,12 +105,18 @@
 {% endtemplate %}
 
 {% template x_row %}
-<div class="wx-row" data-code="{{ symbol_code }}">
+<div class="wx-row{% if highlight %} wx-row--now{% endif %}" data-code="{{ symbol_code }}">
   <span class="wx-row-time">{{ time_label }}</span>
   <img class="weather-icon wx-row-icon" />
   <span class="wx-row-temp">{{ temp }}{% if temp2 and temp2 != temp %}<small>/{{ temp2 }}°</small>{% else %}°{% endif %}</span>
   <span class="wx-row-precip">{% if precip > 0 %}{{ precip }}{{ precip_unit }}{% endif %}</span>
   <span class="wx-row-wind">{{ wind }}{{ wind_unit }}</span>
+</div>
+{% endtemplate %}
+
+{% template x_row_empty %}
+<div class="wx-row wx-row--past">
+  <span class="wx-row-time">{{ time_label }}</span>
 </div>
 {% endtemplate %}
 

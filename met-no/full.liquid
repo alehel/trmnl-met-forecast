@@ -65,7 +65,8 @@
 {% assign cur_precip = current.data.next_1_hours.details.precipitation_amount | default: 0 | round: 1 %}
 {% assign now_time = "now" | date: "%s" | plus: trmnl.user.utc_offset | date: "%H:%M" %}
 {% assign first_epoch = current.time | date: "%s" | plus: 0 %}
-{% assign hourly_until = first_epoch | plus: 86400 %}
+{% assign ts0_day = first_epoch | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
+{% assign ts0_hour = first_epoch | plus: trmnl.user.utc_offset | date: "%H" | plus: 0 %}
 
 {% comment %}
 Find the window where the clear-sky UV index is 3 or higher. When the
@@ -181,32 +182,50 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     {% assign day = "" %}
     {% assign last_agg_end = 0 %}
 
-    {% for event in properties.timeseries %}
-    {% if forloop.first %}{% continue %}{% endif %}
+    {% comment %} Today always shows all 24 hours; hours already gone render as empty rows {% endcomment %}
+    {% if ts0_day == today %}
+    {% assign today_date = first_epoch | plus: trmnl.user.utc_offset | date: "%-d.%-m." %}
+    {% render "x_header", key: "today", label: "Today", date: today_date %}
+    {% assign day = today %}
+    {% assign slots = 1 %}
+    {% for ph in (0..23) %}
+    {% if ph >= ts0_hour %}{% break %}{% endif %}
+    {% if ph < 10 %}
+    {% assign ph_label = "0" | append: ph %}
+    {% else %}
+    {% assign ph_label = ph %}
+    {% endif %}
+    {% render "x_row_empty", time_label: ph_label %}
+    {% assign slots = slots | plus: 1 %}
+    {% endfor %}
+    {% endif %}
 
+    {% for event in properties.timeseries %}
     {% assign event_epoch = event.time | date: "%s" | plus: 0 %}
     {% assign local_epoch = event_epoch | plus: trmnl.user.utc_offset %}
     {% assign event_day = local_epoch | date: "%Y-%m-%d" %}
     {% assign event_hour = local_epoch | date: "%H" %}
 
+    {% if event_day < today %}{% continue %}{% endif %}
+
     {% assign is_hourly = false %}
-    {% if event_epoch <= hourly_until and event.data.next_1_hours %}
+    {% if event_day == today and event.data.next_1_hours %}
     {% assign is_hourly = true %}
     {% endif %}
 
+    {% assign is_now = false %}
     {% if is_hourly %}
     {% assign time_label = event_hour %}
     {% assign symbol = event.data.next_1_hours.summary.symbol_code %}
     {% assign precip = event.data.next_1_hours.details.precipitation_amount | default: 0 | round: 1 %}
     {% assign temp = event.data.instant.details.air_temperature | round %}
-    {% else %}
-    {% comment %} Aggregated rows: 2-hour steps for today and tomorrow, 6-hour blocks for later days {% endcomment %}
-    {% assign is_near_day = false %}
-    {% if event_day == today or event_day == tomorrow %}
-    {% assign is_near_day = true %}
+    {% assign temp2 = nil %}
+    {% if forloop.first %}
+    {% assign is_now = true %}
     {% endif %}
-
-    {% if is_near_day and event.data.next_1_hours %}
+    {% else %}
+    {% comment %} Aggregated rows: 2-hour steps for tomorrow, 6-hour blocks for later days {% endcomment %}
+    {% if event_day == tomorrow and event.data.next_1_hours %}
     {% assign block_hours = 2 %}
     {% assign hour_mod = event_hour | plus: 0 | modulo: 2 %}
     {% elsif event.data.next_6_hours %}
@@ -283,7 +302,7 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     {% endif %}
 
     {% assign wind = event.data.instant.details.wind_speed | round %}
-    {% render "x_row", time_label: time_label, symbol_code: symbol, temp: temp, temp2: temp2, wind: wind, precip: precip, precip_unit: units.precipitation_amount, wind_unit: units.wind_speed %}
+    {% render "x_row", time_label: time_label, symbol_code: symbol, temp: temp, temp2: temp2, wind: wind, precip: precip, precip_unit: units.precipitation_amount, wind_unit: units.wind_speed, highlight: is_now %}
     {% assign slots = slots | plus: 1 %}
     {% if slots >= 48 %}{% break %}{% endif %}
 
@@ -409,6 +428,16 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
   .wx-row-temp small {
     font-size: 11px;
     font-weight: 600;
+  }
+  .wx-row--past .wx-row-time {
+    color: #999;
+  }
+  .wx-row--now {
+    background: #000;
+    color: #fff;
+  }
+  .wx-row--now .weather-icon {
+    filter: invert(1);
   }
   .wx-row-time {
     font-size: 12px;
