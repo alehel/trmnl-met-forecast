@@ -21,7 +21,20 @@ Winter night (Norwegian) — negative temperatures, max/min ranges in the 6-hour
 - **Configurable Location**: Set custom latitude and longitude coordinates for any location
 - **Multi-language Support**: Available in English and Norwegian
 
-**Location:** `/met-no/`
+## Setup
+
+The plugin lives in `/met-no/` and works as a TRMNL [private plugin](https://usetrmnl.com):
+
+1. In TRMNL, create a new private plugin with the **polling** strategy.
+2. Set the polling URL to `https://api.met.no/weatherapi/locationforecast/2.0/complete.json?lat={{ latitude }}&lon={{ longitude }}` and add the header `user-agent=TRMNL` (see `met-no/settings.yml` for the full configuration, including the latitude, longitude, and language custom fields).
+3. Copy `met-no/full.liquid` into the full layout markup and `met-no/shared.liquid` into the shared markup.
+4. Set your latitude, longitude, and language in the plugin settings.
+
+Alternatively, use [trmnlp](https://github.com/usetrmnl/trmnlp) with the `met-no` directory to preview and push the plugin.
+
+## Data
+
+Weather data from [MET Norway](https://www.met.no)'s [Locationforecast 2.0](https://api.met.no/weatherapi/locationforecast/2.0/documentation) API, licensed under [NLOD 2.0](https://data.norge.no/nlod/en/2.0) and [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## Credits
 

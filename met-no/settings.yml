@@ -12,23 +12,22 @@ custom_fields:
 - keyname: about
   name: About This Plugin
   field_type: author_bio
-  description: Display weather forecast from The Norwegian Meteorological Institute (met.no) on your TRMNL screen. This is not an official plugin. It is developed by Argo Roots and uses the met.no API.
-  github_url: https://github.com/argoroots/trmnl
+  description: Weather forecast from The Norwegian Meteorological Institute (met.no) for the TRMNL X full-screen layout. Shows current conditions with UV index and sunscreen window, today hour by hour, tomorrow in 2-hour steps, and 6-hour blocks for the days after. This is not an official plugin. Based on the met.no plugin by Argo Roots.
+  github_url: https://github.com/alehel/trmnl-met-forecast
   learn_more_url: https://www.met.no
-  email_address: argo@roots.ee
 - keyname: latitude
   name: Latitude
-  description: Latitude coordinate for the weather location (e.g., 59.4370).
+  description: Latitude coordinate for the weather location (e.g., 59.9139).
   field_type: string
   rows: 1
-  placeholder: '59.4370'
+  placeholder: '59.9139'
   required: true
 - keyname: longitude
   name: Longitude
-  description: Longitude coordinate for the weather location (e.g., 24.7536).
+  description: Longitude coordinate for the weather location (e.g., 10.7522).
   field_type: string
   rows: 1
-  placeholder: '24.7536'
+  placeholder: '10.7522'
   required: true
 - keyname: language
   name: Language
