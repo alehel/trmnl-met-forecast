@@ -408,7 +408,6 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     grid-auto-flow: column;
     grid-auto-columns: calc((100% - 52px) / 3);
     column-gap: 26px;
-    overflow: hidden;
   }
   .wx-forecast .wx-head {
     align-self: end;
@@ -433,14 +432,11 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     color: #999;
   }
   .wx-row--now {
-    background: #444;
-    color: #fff;
-    margin: -3px -6px;
-    padding: 3px 6px;
+    background: #ccc;
+    margin: -3px -10px;
+    padding: 3px 10px;
     border-bottom-color: transparent;
-  }
-  .wx-row--now .weather-icon {
-    filter: invert(1);
+    border-radius: 8px;
   }
   .wx-row-time {
     font-size: 12px;
