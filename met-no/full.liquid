@@ -67,24 +67,24 @@
 {% assign first_epoch = current.time | date: "%s" | plus: 0 %}
 {% assign hourly_until = first_epoch | plus: 86400 %}
 
-{% comment %} Find the next window where the clear-sky UV index is 3 or higher {% endcomment %}
+{% comment %}
+Find the window where the clear-sky UV index is 3 or higher. When the
+current hour is already inside the window, its start is no longer in the
+timeseries, so the start hour is reconstructed from the next morning's rise.
+{% endcomment %}
 {% assign uv_range = "" %}
-{% assign uv_in_window = false %}
+{% assign uv_phase = "before" %}
 {% assign uv_start_label = "" %}
 {% assign uv_end_label = "" %}
 {% for event in properties.timeseries %}
 {% assign uv = event.data.instant.details.ultraviolet_index_clear_sky %}
 {% unless uv %}{% continue %}{% endunless %}
 {% assign uv_local = event.time | date: "%s" | plus: trmnl.user.utc_offset %}
-{% if uv_in_window %}
-{% if uv < 3 %}
-{% assign uv_end_label = uv_local | date: "%H" %}
-{% break %}
-{% endif %}
-{% elsif uv >= 3 %}
-{% assign uv_in_window = true %}
+{% case uv_phase %}
+{% when "before" %}
+{% if uv >= 3 %}
 {% if forloop.first %}
-{% assign uv_start_label = t_now %}
+{% assign uv_phase = "inside_unknown_start" %}
 {% else %}
 {% assign uv_day = uv_local | date: "%Y-%m-%d" %}
 {% assign uv_start_hour = uv_local | date: "%H" %}
@@ -93,13 +93,31 @@
 {% elsif uv_day == tomorrow %}
 {% assign uv_start_label = t_tomorrow | append: " " | append: uv_start_hour %}
 {% else %}
-{% assign uv_in_window = false %}
 {% break %}
 {% endif %}
+{% assign uv_phase = "inside" %}
 {% endif %}
 {% endif %}
+{% when "inside", "inside_unknown_start" %}
+{% if uv < 3 %}
+{% assign uv_end_label = uv_local | date: "%H" %}
+{% if uv_phase == "inside" %}
+{% break %}
+{% else %}
+{% assign uv_phase = "find_next_start" %}
+{% endif %}
+{% endif %}
+{% when "find_next_start" %}
+{% if uv >= 3 %}
+{% assign uv_start_label = uv_local | date: "%H" %}
+{% break %}
+{% endif %}
+{% endcase %}
 {% endfor %}
-{% if uv_in_window and uv_end_label != "" %}
+{% if uv_end_label != "" and uv_start_label == "" %}
+{% assign uv_start_label = t_now %}
+{% endif %}
+{% if uv_start_label != "" and uv_end_label != "" %}
 {% assign uv_range = uv_start_label | append: "–" | append: uv_end_label %}
 {% endif %}
 
@@ -161,7 +179,7 @@
   <div class="wx-forecast">
     {% assign slots = 0 %}
     {% assign day = "" %}
-    {% assign last_agg_epoch = 0 %}
+    {% assign last_agg_end = 0 %}
 
     {% for event in properties.timeseries %}
     {% if forloop.first %}{% continue %}{% endif %}
@@ -182,18 +200,29 @@
     {% assign precip = event.data.next_1_hours.details.precipitation_amount | default: 0 | round: 1 %}
     {% assign temp = event.data.instant.details.air_temperature | round %}
     {% else %}
-    {% comment %} Aggregated rows: 3-hour steps while hourly data lasts, native 6-hour blocks after that {% endcomment %}
-    {% if event.data.next_1_hours %}
-    {% assign hour_mod = event_hour | plus: 0 | modulo: 3 %}
-    {% if hour_mod != 0 %}{% continue %}{% endif %}
-    {% else %}
-    {% unless event.data.next_6_hours %}{% continue %}{% endunless %}
+    {% comment %} Aggregated rows: 3-hour steps for today and tomorrow, 6-hour blocks for later days {% endcomment %}
+    {% assign is_near_day = false %}
+    {% if event_day == today or event_day == tomorrow %}
+    {% assign is_near_day = true %}
     {% endif %}
 
-    {% assign agg_gap = event_epoch | minus: last_agg_epoch %}
-    {% if agg_gap < 10800 %}{% continue %}{% endif %}
-
+    {% if is_near_day and event.data.next_1_hours %}
+    {% assign block_hours = 3 %}
+    {% assign hour_mod = event_hour | plus: 0 | modulo: 3 %}
+    {% elsif event.data.next_6_hours %}
+    {% assign block_hours = 6 %}
     {% if event.data.next_1_hours %}
+    {% assign hour_mod = event_hour | plus: 0 | modulo: 6 %}
+    {% else %}
+    {% assign hour_mod = 0 %}
+    {% endif %}
+    {% else %}
+    {% continue %}
+    {% endif %}
+    {% if hour_mod != 0 %}{% continue %}{% endif %}
+    {% if event_epoch < last_agg_end %}{% continue %}{% endif %}
+
+    {% if block_hours == 3 %}
     {% assign duration = 10800 %}
     {% assign symbol = event.data.next_1_hours.summary.symbol_code %}
     {% assign i1 = forloop.index0 | plus: 1 %}
@@ -202,11 +231,6 @@
     {% assign p1 = properties.timeseries[i1].data.next_1_hours.details.precipitation_amount | default: 0 %}
     {% assign p2 = properties.timeseries[i2].data.next_1_hours.details.precipitation_amount | default: 0 %}
     {% assign precip = p0 | plus: p1 | plus: p2 | round: 1 %}
-    {% else %}
-    {% assign duration = 21600 %}
-    {% assign symbol = event.data.next_6_hours.summary.symbol_code %}
-    {% assign precip = event.data.next_6_hours.details.precipitation_amount | default: 0 | round: 1 %}
-    {% endif %}
 
     {% comment %} Average the instant temperatures available inside the block {% endcomment %}
     {% assign block_end = event_epoch | plus: duration %}
@@ -223,6 +247,20 @@
     {% assign t_count = t_count | plus: 1 %}
     {% endfor %}
     {% assign temp = t_sum | divided_by: t_count | round %}
+    {% assign temp2 = nil %}
+    {% else %}
+    {% assign duration = 21600 %}
+    {% assign symbol = event.data.next_6_hours.summary.symbol_code %}
+    {% assign precip = event.data.next_6_hours.details.precipitation_amount | default: 0 | round: 1 %}
+    {% if event.data.next_6_hours.details.air_temperature_max %}
+    {% assign temp = event.data.next_6_hours.details.air_temperature_max | round %}
+    {% assign temp2 = event.data.next_6_hours.details.air_temperature_min | round %}
+    {% else %}
+    {% assign temp = event.data.instant.details.air_temperature | round %}
+    {% assign temp2 = nil %}
+    {% endif %}
+    {% endif %}
+    {% assign last_agg_end = event_epoch | plus: duration %}
 
     {% assign end_hour = local_epoch | plus: duration | date: "%H" %}
     {% assign time_label = event_hour | append: "–" | append: end_hour %}
@@ -247,8 +285,7 @@
     {% endif %}
 
     {% assign wind = event.data.instant.details.wind_speed | round %}
-    {% render "x_row", time_label: time_label, symbol_code: symbol, temp: temp, wind: wind, precip: precip, precip_unit: units.precipitation_amount, wind_unit: units.wind_speed %}
-    {% unless is_hourly %}{% assign last_agg_epoch = event_epoch %}{% endunless %}
+    {% render "x_row", time_label: time_label, symbol_code: symbol, temp: temp, temp2: temp2, wind: wind, precip: precip, precip_unit: units.precipitation_amount, wind_unit: units.wind_speed %}
     {% assign slots = slots | plus: 1 %}
     {% if slots >= 48 %}{% break %}{% endif %}
 
@@ -366,10 +403,14 @@
   }
   .wx-row {
     display: grid;
-    grid-template-columns: 42px 32px 40px 1fr 46px;
+    grid-template-columns: 38px 30px 58px 1fr 40px;
     align-items: center;
     border-bottom: 1px solid #ccc;
     font-size: 15px;
+  }
+  .wx-row-temp small {
+    font-size: 11px;
+    font-weight: 600;
   }
   .wx-row-time {
     font-size: 12px;
@@ -386,6 +427,7 @@
     text-align: right;
     font-size: 12px;
     white-space: nowrap;
+    padding-left: 3px;
   }
   .wx-row-wind {
     text-align: right;

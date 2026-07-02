@@ -108,7 +108,7 @@
 <div class="wx-row" data-code="{{ symbol_code }}">
   <span class="wx-row-time">{{ time_label }}</span>
   <img class="weather-icon wx-row-icon" />
-  <span class="wx-row-temp">{{ temp }}°</span>
+  <span class="wx-row-temp">{{ temp }}{% if temp2 and temp2 != temp %}<small>/{{ temp2 }}°</small>{% else %}°{% endif %}</span>
   <span class="wx-row-precip">{% if precip > 0 %}{{ precip }}{{ precip_unit }}{% endif %}</span>
   <span class="wx-row-wind">{{ wind }}{{ wind_unit }}</span>
 </div>
