@@ -1,100 +1,5 @@
 {% assign today = "now" | date: "%s" | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
 {% assign tomorrow = "now" | date: "%s" | plus: trmnl.user.utc_offset | plus: 86400 | date: "%Y-%m-%d" %}
-{% assign third_day = "now" | date: "%s" | plus: trmnl.user.utc_offset | plus: 172800 | date: "%Y-%m-%d" %}
-{% assign current_hour = "now" | date: "%s" | plus: trmnl.user.utc_offset | date: "%H" %}
-
-{% case current_hour %}
-{% when "00" %}
-{% assign today_hours_to_show = "00,03,06,09,12,15,18,21" %}
-{% when "01" %}
-{% assign today_hours_to_show = "01,04,07,10,13,16,19,22" %}
-{% when "02" %}
-{% assign today_hours_to_show = "02,05,08,11,14,17,20,23" %}
-{% when "03" %}
-{% assign today_hours_to_show = "03,05,08,11,14,17,20,23" %}
-{% when "04" %}
-{% assign today_hours_to_show = "04,06,08,11,14,17,20,23" %}
-{% when "05" %}
-{% assign today_hours_to_show = "05,06,07,10,13,16,19,22" %}
-{% when "06" %}
-{% assign today_hours_to_show = "06,07,08,11,14,17,20,23" %}
-{% when "07" %}
-{% assign today_hours_to_show = "07,09,11,13,15,17,19,21" %}
-{% when "08" %}
-{% assign today_hours_to_show = "08,10,12,14,16,18,20,22" %}
-{% when "09" %}
-{% assign today_hours_to_show = "09,11,13,15,17,19,21,23" %}
-{% when "10" %}
-{% assign today_hours_to_show = "10,11,13,15,17,19,21,23" %}
-{% when "11" %}
-{% assign today_hours_to_show = "11,12,13,15,17,19,21,23" %}
-{% when "12" %}
-{% assign today_hours_to_show = "12,13,14,15,17,19,21,23" %}
-{% when "13" %}
-{% assign today_hours_to_show = "13,14,15,16,17,19,21,23" %}
-{% when "14" %}
-{% assign today_hours_to_show = "14,15,16,17,18,19,20,21" %}
-{% when "15" %}
-{% assign today_hours_to_show = "15,16,17,18,19,20,21,22" %}
-{% when "16" %}
-{% assign today_hours_to_show = "16,17,18,19,20,21,22,23" %}
-{% when "17" %}
-{% assign today_hours_to_show = "17,18,19,20,21,22,23" %}
-{% when "18" %}
-{% assign today_hours_to_show = "18,19,20,21,22,23" %}
-{% when "19" %}
-{% assign today_hours_to_show = "19,20,21,22,23" %}
-{% when "20" %}
-{% assign today_hours_to_show = "20,21,22,23" %}
-{% when "21" %}
-{% assign today_hours_to_show = "21,22,23" %}
-{% when "22" %}
-{% assign today_hours_to_show = "22,23" %}
-{% when "23" %}
-{% assign today_hours_to_show = "23" %}
-{% else %}
-{% assign today_hours_to_show = "00,03,06,09,12,15,18,21" %}
-{% endcase %}
-{% assign today_hours_to_show = today_hours_to_show | split: "," %}
-{% assign tomorrow_hours_to_show = "00,03,06,09,12,15,18,21" %}
-{% assign nextday_hours_to_show = "00,06,12,18" %}
-
-{% template header %}
-<span class="label label--small label--inverted group-header w--full" data-group-header="true">{{ title }}</span>
-{% endtemplate %}
-
-{% template item %}
-{% if size == "small" %}
-{% assign content_class = "content" %}
-{% else %}
-{% assign content_class = "content pb--1" %}
-{% endif %}
-
-<div class="item">
-  <div class="meta w--6">
-    <span class="index">{{ index }}</span>
-  </div>
-
-  <div class="{{ content_class }}" data-code="{{ symbol_code }}">
-    <div class="flex flex--center-y gap--xsmall">
-      <img class="weather-icon" />
-
-      <div>
-        <span class="title title--small">{{ air_temperature }}°</span><br>
-        <span class="label label--small" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
-          {{ wind_speed }}{{ units.wind_speed }}
-          ·
-          {% if precipitation_amount > 0 %}
-          {{ precipitation_amount }}{{ units.precipitation_amount }}
-          ·
-          {% endif %}
-          <span class="weather-description"></span>
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
-{% endtemplate %}
 
 {% template x_header %}
 <div class="wx-head">
@@ -582,12 +487,6 @@
       }
     }
 
-    // Set the day labels based on the current language
-    document.querySelectorAll('.group-header').forEach(header => {
-      const dayKey = header.textContent.trim().toLowerCase()
-      if (days[dayKey]) header.textContent = days[dayKey]['{{ trmnl.plugin_settings.custom_fields_values.language }}'] || days[dayKey].en
-    })
-
     // Set day labels on elements carrying an explicit day key
     document.querySelectorAll('[data-day-key]').forEach(el => {
       const dayKey = el.dataset.dayKey
@@ -631,14 +530,3 @@
   })
 </script>
 
-<style>
-  .label--inverted.group-header {
-    border-radius: 0 !important;
-    height: 22px !important;
-    line-height: 1.25rem !important;
-    text-transform: uppercase !important;
-  }
-  .weather-icon {
-    width: 2.5rem;
-  }
-</style>

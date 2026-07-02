@@ -13,7 +13,6 @@
 {% assign t_now = "Nå" %}
 {% assign t_tomorrow = "I morgen" %}
 {% assign t_unsupported = "Støttes kun på TRMNL X" %}
-{% assign t_unsupported_hint = "Bruk halv- eller kvadrantoppsettene på denne enheten." %}
 {% else %}
 {% assign t_feels = "Feels like" %}
 {% assign t_wind = "Wind" %}
@@ -26,7 +25,6 @@
 {% assign t_now = "Now" %}
 {% assign t_tomorrow = "Tomorrow" %}
 {% assign t_unsupported = "Only supported on TRMNL X" %}
-{% assign t_unsupported_hint = "Use the half or quadrant layouts on this device." %}
 {% endcase %}
 
 {% assign units = properties.meta.units %}
@@ -281,10 +279,7 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
   </div>
 
   <div class="wx-unsupported">
-    <div>
-      <div class="wx-unsupported-title">{{ t_unsupported }}</div>
-      <div class="wx-unsupported-hint">{{ t_unsupported_hint }}</div>
-    </div>
+    <div class="wx-unsupported-title">{{ t_unsupported }}</div>
   </div>
 </div>
 
@@ -460,10 +455,6 @@ timeseries, so the start hour is reconstructed from the next morning's rise.
     .wx-unsupported-title {
       font-size: 26px;
       font-weight: 700;
-    }
-    .wx-unsupported-hint {
-      font-size: 15px;
-      margin-top: 8px;
     }
   }
 </style>
