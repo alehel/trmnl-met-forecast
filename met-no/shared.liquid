@@ -97,6 +97,23 @@
 </div>
 {% endtemplate %}
 
+{% template x_header %}
+<div class="wx-head">
+  <span class="wx-head-day" data-day-key="{{ key }}">{{ label }}</span>
+  {% if date %}<span class="wx-head-date">{{ date }}</span>{% endif %}
+</div>
+{% endtemplate %}
+
+{% template x_row %}
+<div class="wx-row" data-code="{{ symbol_code }}">
+  <span class="wx-row-time">{{ time_label }}</span>
+  <img class="weather-icon wx-row-icon" />
+  <span class="wx-row-temp">{{ temp }}°</span>
+  <span class="wx-row-precip">{% if precip > 0 %}{{ precip }}{{ precip_unit }}{% endif %}</span>
+  <span class="wx-row-wind">{{ wind }}{{ wind_unit }}</span>
+</div>
+{% endtemplate %}
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const weather = {
@@ -767,6 +784,13 @@
     }
 
     const days = {
+      now: {
+        en: 'Now',
+        et: 'Praegu',
+        fi: 'Nyt',
+        no: 'Nå',
+        sv: 'Nu'
+      },
       today: {
         en: 'Today',
         et: 'Täna',
@@ -836,6 +860,32 @@
     document.querySelectorAll('.group-header').forEach(header => {
       const dayKey = header.textContent.trim().toLowerCase()
       if (days[dayKey]) header.textContent = days[dayKey]['{{ trmnl.plugin_settings.custom_fields_values.language }}'] || days[dayKey].en
+    })
+
+    // Set day labels on elements carrying an explicit day key
+    document.querySelectorAll('[data-day-key]').forEach(el => {
+      const dayKey = el.dataset.dayKey
+      if (days[dayKey]) el.textContent = days[dayKey]['{{ trmnl.plugin_settings.custom_fields_values.language }}'] || days[dayKey].en
+    })
+
+    // Compute "feels like" temperature (wind chill below 10°C, heat index above 26°C)
+    document.querySelectorAll('[data-feels-t]').forEach(el => {
+      const t = parseFloat(el.dataset.feelsT)
+      if (isNaN(t)) return
+
+      const wind = parseFloat(el.dataset.feelsW)
+      const rh = parseFloat(el.dataset.feelsRh)
+      const v = (isNaN(wind) ? 0 : wind) * 3.6
+      let feels = t
+
+      if (t <= 10 && v >= 4.8) {
+        feels = 13.12 + 0.6215 * t - 11.37 * Math.pow(v, 0.16) + 0.3965 * t * Math.pow(v, 0.16)
+      } else if (t >= 26 && !isNaN(rh)) {
+        feels = -8.784695 + 1.61139411 * t + 2.338549 * rh - 0.14611605 * t * rh - 0.012308094 * t * t -
+          0.016424828 * rh * rh + 0.002211732 * t * t * rh + 0.00072546 * t * rh * rh - 0.000003582 * t * t * rh * rh
+      }
+
+      el.textContent = Math.round(feels) + '°'
     })
 
     // Find all content divs with weather data and update icons and descriptions

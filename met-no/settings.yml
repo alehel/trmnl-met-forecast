@@ -44,7 +44,7 @@ custom_fields:
   optional: false
 - keyname: layout
   name: Layout
-  description: Choose the layout for the weather forecast. Hourly shows full list of upcoming hours, while Default tries to show also next days.
+  description: Affects half and quadrant layouts only. Hourly shows full list of upcoming hours, while Default tries to show also next days. The full-screen layout always shows current conditions plus an hourly timeline.
   field_type: select
   options:
   - Default: default

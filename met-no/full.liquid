@@ -1,97 +1,311 @@
-<div class="layout layout--col layout--stretch">
-  {% if trmnl.plugin_settings.custom_fields_values.layout == "hourly" %}
+{% assign lang = trmnl.plugin_settings.custom_fields_values.language | default: "en" %}
 
-  <div class="columns" data-max-columns="3">
+{% case lang %}
+{% when "et" %}
+{% assign t_feels = "Tundub nagu" %}
+{% assign t_wind = "Tuul" %}
+{% assign t_precip = "Sademed" %}
+{% assign t_humidity = "Õhuniiskus" %}
+{% assign t_pressure = "Õhurõhk" %}
+{% assign t_clouds = "Pilvisus" %}
+{% when "no" %}
+{% assign t_feels = "Føles som" %}
+{% assign t_wind = "Vind" %}
+{% assign t_precip = "Nedbør" %}
+{% assign t_humidity = "Luftfuktighet" %}
+{% assign t_pressure = "Lufttrykk" %}
+{% assign t_clouds = "Skydekke" %}
+{% when "fi" %}
+{% assign t_feels = "Tuntuu kuin" %}
+{% assign t_wind = "Tuuli" %}
+{% assign t_precip = "Sade" %}
+{% assign t_humidity = "Kosteus" %}
+{% assign t_pressure = "Ilmanpaine" %}
+{% assign t_clouds = "Pilvisyys" %}
+{% when "sv" %}
+{% assign t_feels = "Känns som" %}
+{% assign t_wind = "Vind" %}
+{% assign t_precip = "Nederbörd" %}
+{% assign t_humidity = "Luftfuktighet" %}
+{% assign t_pressure = "Lufttryck" %}
+{% assign t_clouds = "Molnighet" %}
+{% else %}
+{% assign t_feels = "Feels like" %}
+{% assign t_wind = "Wind" %}
+{% assign t_precip = "Precipitation" %}
+{% assign t_humidity = "Humidity" %}
+{% assign t_pressure = "Pressure" %}
+{% assign t_clouds = "Cloud cover" %}
+{% endcase %}
+
+{% assign units = properties.meta.units %}
+{% assign current = properties.timeseries[0] %}
+{% assign cur = current.data.instant.details %}
+{% assign cur_symbol = current.data.next_1_hours.summary.symbol_code | default: current.data.next_6_hours.summary.symbol_code %}
+{% assign cur_precip = current.data.next_1_hours.details.precipitation_amount | default: 0 | round: 1 %}
+{% assign now_time = "now" | date: "%s" | plus: trmnl.user.utc_offset | date: "%H:%M" %}
+{% assign first_epoch = current.time | date: "%s" | plus: 0 %}
+{% assign hourly_until = first_epoch | plus: 86400 %}
+
+<div class="layout wx">
+  <div class="wx-current" data-code="{{ cur_symbol }}">
+    <div class="wx-head">
+      <span class="wx-head-day" data-day-key="now">Now</span>
+      <span class="wx-head-date">{{ now_time }}</span>
+    </div>
+
+    <div class="wx-current-main">
+      <img class="weather-icon wx-current-icon" />
+      <div class="wx-current-reading">
+        <span class="wx-current-temp">{{ cur.air_temperature | round }}°</span>
+        <span class="wx-current-feels">{{ t_feels }} <span data-feels-t="{{ cur.air_temperature }}" data-feels-w="{{ cur.wind_speed }}" data-feels-rh="{{ cur.relative_humidity }}">{{ cur.air_temperature | round }}°</span></span>
+      </div>
+    </div>
+
+    <div class="wx-current-desc weather-description"></div>
+
+    <div class="wx-metrics">
+      <div class="wx-metric">
+        <span class="wx-metric-label">{{ t_wind }}</span>
+        <span class="wx-metric-value">
+          {{ cur.wind_speed | round }} {{ units.wind_speed }}
+          <svg class="wx-wind-arrow" viewBox="0 0 24 24"><g transform="rotate({{ cur.wind_from_direction | plus: 180 | modulo: 360 | round }} 12 12)"><path d="M12 21 L12 4 M12 4 L7 9.5 M12 4 L17 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></g></svg>
+        </span>
+      </div>
+      <div class="wx-metric">
+        <span class="wx-metric-label">{{ t_precip }}</span>
+        <span class="wx-metric-value">{% if cur_precip == 0 %}0{% else %}{{ cur_precip }}{% endif %} {{ units.precipitation_amount }}</span>
+      </div>
+      <div class="wx-metric">
+        <span class="wx-metric-label">{{ t_humidity }}</span>
+        <span class="wx-metric-value">{{ cur.relative_humidity | round }}{{ units.relative_humidity }}</span>
+      </div>
+      <div class="wx-metric">
+        <span class="wx-metric-label">{{ t_pressure }}</span>
+        <span class="wx-metric-value">{{ cur.air_pressure_at_sea_level | round }} {{ units.air_pressure_at_sea_level }}</span>
+      </div>
+      <div class="wx-metric">
+        <span class="wx-metric-label">{{ t_clouds }}</span>
+        <span class="wx-metric-value">{{ cur.cloud_area_fraction | round }}{{ units.cloud_area_fraction }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wx-forecast">
+    {% assign slots = 0 %}
+    {% assign day = "" %}
+    {% assign last_agg_epoch = 0 %}
+
     {% for event in properties.timeseries %}
-      {% assign event_day = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
-      {% assign event_day_name = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%A" %}
-      {% assign event_hour = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%H" %}
+    {% if forloop.first %}{% continue %}{% endif %}
 
-      {% if event_day != day %}
-        {% unless forloop.first %}
-          </div>
-        {% endunless %}
+    {% assign event_epoch = event.time | date: "%s" | plus: 0 %}
+    {% assign local_epoch = event_epoch | plus: trmnl.user.utc_offset %}
+    {% assign event_day = local_epoch | date: "%Y-%m-%d" %}
+    {% assign event_hour = local_epoch | date: "%H" %}
 
-        <div class="column">
-        {% if event_day == today %}
-          {% render "header", title: "Today" %}
-        {% elsif event_day == tomorrow %}
-          {% render "header", title: "Tomorrow" %}
-        {% else %}
-          {% render "header", title: event_day_name %}
-        {% endif %}
-        {% assign day = event_day %}
-      {% endif %}
+    {% assign is_hourly = false %}
+    {% if event_epoch <= hourly_until and event.data.next_1_hours %}
+    {% assign is_hourly = true %}
+    {% endif %}
 
-      {% render "item", units: properties.meta.units, index: event_hour, symbol_code: event.data.next_1_hours.summary.symbol_code, air_temperature: event.data.instant.details.air_temperature, wind_speed: event.data.instant.details.wind_speed, precipitation_amount: event.data.next_1_hours.details.precipitation_amount %}
+    {% if is_hourly %}
+    {% assign time_label = event_hour %}
+    {% assign symbol = event.data.next_1_hours.summary.symbol_code %}
+    {% assign precip = event.data.next_1_hours.details.precipitation_amount | default: 0 | round: 1 %}
+    {% else %}
+    {% comment %} Aggregated rows: 3-hour steps while hourly data lasts, native 6-hour blocks after that {% endcomment %}
+    {% if event.data.next_1_hours %}
+    {% assign hour_mod = event_hour | plus: 0 | modulo: 3 %}
+    {% if hour_mod != 0 %}{% continue %}{% endif %}
+    {% else %}
+    {% unless event.data.next_6_hours %}{% continue %}{% endunless %}
+    {% endif %}
+
+    {% assign agg_gap = event_epoch | minus: last_agg_epoch %}
+    {% if agg_gap < 10800 %}{% continue %}{% endif %}
+
+    {% if event.data.next_1_hours %}
+    {% assign duration = 10800 %}
+    {% assign symbol = event.data.next_1_hours.summary.symbol_code %}
+    {% assign i1 = forloop.index0 | plus: 1 %}
+    {% assign i2 = forloop.index0 | plus: 2 %}
+    {% assign p0 = event.data.next_1_hours.details.precipitation_amount | default: 0 %}
+    {% assign p1 = properties.timeseries[i1].data.next_1_hours.details.precipitation_amount | default: 0 %}
+    {% assign p2 = properties.timeseries[i2].data.next_1_hours.details.precipitation_amount | default: 0 %}
+    {% assign precip = p0 | plus: p1 | plus: p2 | round: 1 %}
+    {% else %}
+    {% assign duration = 21600 %}
+    {% assign symbol = event.data.next_6_hours.summary.symbol_code %}
+    {% assign precip = event.data.next_6_hours.details.precipitation_amount | default: 0 | round: 1 %}
+    {% endif %}
+
+    {% assign end_hour = local_epoch | plus: duration | date: "%H" %}
+    {% assign time_label = event_hour | append: "–" | append: end_hour %}
+    {% endif %}
+
+    {% if event_day != day %}
+    {% if slots > 46 %}{% break %}{% endif %}
+    {% if event_day == today %}
+    {% assign day_key = "today" %}
+    {% assign day_label = "Today" %}
+    {% elsif event_day == tomorrow %}
+    {% assign day_key = "tomorrow" %}
+    {% assign day_label = "Tomorrow" %}
+    {% else %}
+    {% assign day_label = local_epoch | date: "%A" %}
+    {% assign day_key = day_label | downcase %}
+    {% endif %}
+    {% assign day_date = local_epoch | date: "%-d.%-m." %}
+    {% render "x_header", key: day_key, label: day_label, date: day_date %}
+    {% assign day = event_day %}
+    {% assign slots = slots | plus: 1 %}
+    {% endif %}
+
+    {% assign temp = event.data.instant.details.air_temperature | round %}
+    {% assign wind = event.data.instant.details.wind_speed | round %}
+    {% render "x_row", time_label: time_label, symbol_code: symbol, temp: temp, wind: wind, precip: precip, precip_unit: units.precipitation_amount, wind_unit: units.wind_speed %}
+    {% unless is_hourly %}{% assign last_agg_epoch = event_epoch %}{% endunless %}
+    {% assign slots = slots | plus: 1 %}
+    {% if slots >= 48 %}{% break %}{% endif %}
 
     {% endfor %}
-    {% unless properties.timeseries == empty %}
-      </div>
-    {% endunless %}
   </div>
-
-  {% else %}
-
-  <div class="grid grid--cols-3">
-    {% comment %} Today's Column {% endcomment %}
-    <div class="flex flex--col">
-      {% render "header", title: "Today" %}
-
-      {% for event in properties.timeseries %}
-      {% assign event_day = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
-      {% assign event_hour = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%H" %}
-
-      {% unless event_day == today and today_hours_to_show contains event_hour %}
-      {% continue %}
-      {% endunless %}
-
-      {% render "item", units: properties.meta.units, index: event_hour, symbol_code: event.data.next_1_hours.summary.symbol_code, air_temperature: event.data.instant.details.air_temperature, wind_speed: event.data.instant.details.wind_speed, precipitation_amount: event.data.next_1_hours.details.precipitation_amount %}
-
-      {% endfor %}
-    </div>
-
-    {% comment %} Tomorrow's Column {% endcomment %}
-    <div class="flex flex--col">
-      {% render "header", title: "Tomorrow" %}
-
-      {% for event in properties.timeseries %}
-      {% assign event_day = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
-      {% assign event_hour = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%H" %}
-
-      {% unless event_day == tomorrow and tomorrow_hours_to_show contains event_hour %}
-      {% continue %}
-      {% endunless %}
-
-      {% render "item", units: properties.meta.units, index: event_hour, symbol_code: event.data.next_1_hours.summary.symbol_code, air_temperature: event.data.instant.details.air_temperature, wind_speed: event.data.instant.details.wind_speed, precipitation_amount: event.data.next_1_hours.details.precipitation_amount %}
-
-      {% endfor %}
-    </div>
-
-    {% comment %} Rest of Days Column {% endcomment %}
-    <div class="flex flex--col gap--small">
-      {% for event in properties.timeseries %}
-      {% assign event_day = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
-      {% assign event_day_name = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%A" %}
-      {% assign event_hour = event.time | date: "%s" | plus: trmnl.user.utc_offset | date: "%H" %}
-      {% assign event_utc_hour = event.time | date: "%H" %}
-
-      {% unless event_day == third_day and nextday_hours_to_show contains event_utc_hour %}
-      {% unless event_day == fourth_day and nextday_hours_to_show contains event_utc_hour %}
-      {% continue %}
-      {% endunless %}
-      {% endunless %}
-
-      {% if event_day != day %}
-      {% assign day = event_day %}
-      {% render "header", title: event_day_name %}
-      {% endif %}
-
-      {% render "item", units: properties.meta.units, size: "small", index: event_hour, symbol_code: event.data.next_6_hours.summary.symbol_code, air_temperature: event.data.instant.details.air_temperature, wind_speed: event.data.instant.details.wind_speed, precipitation_amount: event.data.next_6_hours.details.precipitation_amount %}
-
-      {% endfor %}
-    </div>
-  </div>
-
-  {% endif %}
 </div>
+
+<style>
+  .wx {
+    display: flex;
+    flex-direction: row;
+    gap: 26px;
+    width: 100%;
+    height: 100%;
+  }
+  .wx-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #000;
+    color: #fff;
+    padding: 2px 8px;
+    height: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .wx-head-date {
+    font-weight: 400;
+  }
+  .wx-current {
+    width: 274px;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .wx-current-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .wx-current-icon {
+    width: 124px;
+    height: 124px;
+    flex: none;
+  }
+  .wx-current-reading {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .wx-current-temp {
+    font-size: 68px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -3px;
+    white-space: nowrap;
+  }
+  .wx-current-feels {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .wx-current-desc {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 6px;
+    min-height: 21px;
+  }
+  .wx-metrics {
+    display: flex;
+    flex-direction: column;
+    margin-top: 14px;
+  }
+  .wx-metric {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #aaa;
+    font-size: 15px;
+  }
+  .wx-metric:first-child {
+    border-top: 1px solid #aaa;
+  }
+  .wx-metric-value {
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .wx-wind-arrow {
+    width: 15px;
+    height: 15px;
+  }
+  .wx-forecast {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-rows: repeat(16, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - 52px) / 3);
+    column-gap: 26px;
+    overflow: hidden;
+  }
+  .wx-forecast .wx-head {
+    align-self: end;
+    margin-bottom: 3px;
+  }
+  .wx-row {
+    display: grid;
+    grid-template-columns: 42px 32px 40px 1fr 46px;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    font-size: 15px;
+  }
+  .wx-row-time {
+    font-size: 12px;
+  }
+  .wx-row-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .wx-row-temp {
+    font-weight: 700;
+    text-align: right;
+  }
+  .wx-row-precip {
+    text-align: right;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .wx-row-wind {
+    text-align: right;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .weather-icon:not([src]) {
+    visibility: hidden;
+  }
+</style>
