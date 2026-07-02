@@ -1,54 +1,41 @@
-# TRMNL Plugins Collection
+# Met.no Weather Forecast for TRMNL
 
-This repository contains three plugins for [TRMNL](https://usetrmnl.com) e-paper screens.
+A weather forecast plugin for [TRMNL](https://usetrmnl.com) e-paper screens that displays current and upcoming weather conditions using data from The Norwegian Meteorological Institute ([met.no](https://www.met.no)). Only the full-screen layout is provided, designed for the TRMNL X (1040×780); on smaller screens it shows an "only supported on TRMNL X" notice instead.
 
-## 1. Börsihind - Estonian Electricity Prices
+## Screenshots
 
-Displays Estonian electricity prices from [Börsihind.ee](https://börsihind.ee) with current pricing, component breakdown, and price trend visualization.
+Summer afternoon (English) — current conditions with UV and sunscreen window, today hour by hour with the current hour highlighted, tomorrow in 2-hour steps, then 6-hour blocks:
 
-**Features:**
-- **Current Price Display**: Shows the current electricity price with breakdown of components
-- **Price Components**: Displays electricity price, transmission cost, renewable energy fee, and electricity excise
-- **Cheapest Periods**: Highlights the cheapest 1h, 2h, 3h, and 4h periods for optimal energy usage
-- **Visual Chart**: Stacked column chart showing hourly price breakdown for the day
-- **Multiple Layout Options**: Supports full, half horizontal, half vertical, and quadrant layouts
+![Full layout, summer afternoon, English](screenshots/full-summer-en.png)
 
-**Location:** `/borsihind/`
+Winter night (Norwegian) — negative temperatures, max/min ranges in the 6-hour blocks, no sunscreen window:
 
-## 2. Family Calendar - iCal Parser
+![Full layout, winter night, Norwegian](screenshots/full-winter-no.png)
 
-A comprehensive iCal (.ics) calendar parser that displays upcoming events from any calendar source with full RFC 5545 compliance.
+*The previews are rendered with placeholder weather glyphs; on the device the plugin uses TRMNL's hosted weather icon set.*
 
 **Features:**
-- **iCal Format Support**: Full RFC 5545 compliant parser for standard .ics calendar files
-- **Recurring Events**: Complete support for RRULE with DAILY, WEEKLY, MONTHLY, and YEARLY frequencies
-- **Exception Handling**: Proper handling of EXDATE (exception dates) and RECURRENCE-ID (modified instances)
-- **Timezone Support**: Converts between different timezones including Europe/Tallinn and UTC
-- **Event Filtering**: Shows only upcoming events from yesterday onwards (first 25 events)
-- **Multiple Layouts**: Full, half horizontal, half vertical, and quadrant layout options
-- **Clean Output**: Displays event title, start/end times, and location if available
-
-**Location:** `/calendar/`
-
-**Backend Function:** `/functions/calendar.js` - A comprehensive iCal parser with modular function architecture for robust event processing and RFC 5545 compliance. Uses DigitalOcean App Platform Functions to fetch and parse remote calendar URLs that cannot be accessed directly from TRMNL due to CORS restrictions.
-
-**Function Setup:**
-1. Deploy `/functions/calendar.js` to DigitalOcean App Platform as a serverless function
-2. Configure the function URL in your TRMNL plugin settings as the data source
-3. The function accepts a `url` parameter pointing to your iCal (.ics) calendar feed
-4. Returns parsed events in JSON format for display on TRMNL screens
-
-## 3. Met.no Weather Forecast
-
-A weather forecast plugin that displays current and upcoming weather conditions using data from The Norwegian Meteorological Institute (met.no).
-
-**Features:**
-- **Current Weather**: Shows today's hourly weather forecast with temperature, wind speed, and precipitation
-- **Multi-day Forecast**: Displays weather for today, tomorrow, and upcoming days
-- **Weather Icons**: Visual weather symbols based on met.no weather codes
+- **Current Conditions Panel**: Large weather icon with temperature, "feels like" temperature (wind chill/heat index), wind speed and direction, precipitation, humidity, pressure, and cloud cover
+- **UV & Sunscreen Window**: Current clear-sky UV index and the time range when UV is forecast to be 3 or higher — i.e. when sunscreen is recommended (rolls over to tomorrow's window in the evening)
+- **Hour-by-hour Timeline**: Today always shows all 24 hours — past hours as dimmed placeholders (the met.no forecast API carries no past data) and the current hour highlighted — followed by tomorrow in 2-hour rows (precipitation summed, temperature averaged) and 6-hour blocks with max/min temperatures for the two days after, with day headers and dates at each day change
 - **Configurable Location**: Set custom latitude and longitude coordinates for any location
-- **Multi-language Support**: Available in Estonian, English, Norwegian, Finnish, and Swedish
-- **Multiple Layouts**: Full, half horizontal, half vertical, and quadrant layout options
-- **Detailed Metrics**: Temperature, wind speed, and precipitation amount for each forecast period
+- **Multi-language Support**: Available in English and Norwegian
 
-**Location:** `/met-no/`
+## Setup
+
+The plugin lives in `/met-no/` and works as a TRMNL [private plugin](https://usetrmnl.com):
+
+1. In TRMNL, create a new private plugin with the **polling** strategy.
+2. Set the polling URL to `https://api.met.no/weatherapi/locationforecast/2.0/complete.json?lat={{ latitude }}&lon={{ longitude }}` and add the header `user-agent=TRMNL` (see `met-no/settings.yml` for the full configuration, including the latitude, longitude, and language custom fields).
+3. Copy `met-no/full.liquid` into the full layout markup and `met-no/shared.liquid` into the shared markup.
+4. Set your latitude, longitude, and language in the plugin settings.
+
+Alternatively, use [trmnlp](https://github.com/usetrmnl/trmnlp) with the `met-no` directory to preview and push the plugin.
+
+## Data
+
+Weather data from [MET Norway](https://www.met.no)'s [Locationforecast 2.0](https://api.met.no/weatherapi/locationforecast/2.0/documentation) API, licensed under [NLOD 2.0](https://data.norge.no/nlod/en/2.0) and [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+## Credits
+
+This project is based on [argoroots/trmnl](https://github.com/argoroots/trmnl) by [Argo Roots](https://github.com/argoroots), whose met.no plugin provided the original layouts, weather symbol mapping, and translations. The TRMNL X full-screen redesign, UV/sunscreen section, and aggregation logic were built on top of that foundation. The original work is MIT licensed, and this repository retains its license.
